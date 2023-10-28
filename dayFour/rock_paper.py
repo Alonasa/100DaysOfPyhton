@@ -41,7 +41,9 @@ print(f'\nComputer choose: {computer_choice}')
 print(elements[choice])
 
 message = ''
-if computer_choice == 0 and choice == 0 or computer_choice == 1 and choice == 1 or computer_choice == 2 and choice == 2:
+if choice >= 3 or choice < 0:
+    message = 'You typed and invalid number, you loose!'
+elif computer_choice == 0 and choice == 0 or computer_choice == 1 and choice == 1 or computer_choice == 2 and choice == 2:
     message = 'Its a draw'
 elif computer_choice == 0 and choice == 2 or computer_choice == 2 and choice == 1:
     message = 'You loose'
