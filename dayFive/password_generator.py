@@ -31,3 +31,7 @@ for num in range(nr_numbers):
 
 
 print(f"Your password is: {passp}")
+
+strong = ''.join(random.sample(passp,len(passp)))
+
+print(f"Your strong password is: {strong}")
