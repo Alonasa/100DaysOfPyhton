@@ -1,4 +1,6 @@
 import random
+import os
+import time
 
 words = ['pig', 'dog', 'mouse', 'cat', 'wolf', 'butterfly', 'horse', 'bird', 'cow', 'goat', 'bool', 'ship']
 
@@ -101,34 +103,48 @@ def pick_word(words):
     return words[idx]
 
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def title():
+    print("\nWelcome to Hangman!!!")
+    print("Start guessing letters in the word")
+
+
 def guess_letter(words):
-    print('Welcome to Hangman!!!')
-    print('Start guessing letters in the word\n')
     word = pick_word(words)
-    print(word)
     continue_game = True
     underscores = ['_'] * len(word)
-    print(' '.join(underscores))
     looses = 0
-    print(grapnic[looses])
     while continue_game:
-        letter = input('\nGuess a letter ')
-        if letter in word:
-            amount_letters = word.count(letter)
+        title()
+        print(grapnic[looses])
+        print(' '.join(underscores))
+        found = False
+        guess = input('\nGuess a letter ').lower()
+        for position in range(len(word)):
+            letter = word[position]
+            if letter == guess:
+                underscores[position] = letter
+                found = True
 
-            idx = word.index(letter)
-            underscores[idx] = letter
-            for item in underscores:
-                print(item, end='')
-        else:
-            if looses < len(grapnic)-2:
+        if not found:
+            if looses < len(grapnic) - 2:
                 looses += 1
-                print(grapnic[looses])
-
+                clear_screen()
             else:
+                clear_screen()
                 print(grapnic[-1])
                 print("YOU LOOSE")
                 continue_game = False
 
+def play():
+    play_again = True
+    while play_again:
+        guess_letter(words)
+        again = input("Do you like to play again? ")
+        if again[0].lower() != 'y':
+            play_again = False
 
-guess_letter(words)
+play()
