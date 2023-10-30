@@ -12,7 +12,7 @@ def encrypt(text, shift):
             if newIdx < len(alphabet):
                 encrypted += alphabet[newIdx]
             else:
-                extra = newIdx - len(alphabet)
+                extra = newIdx % len(alphabet)
                 encrypted += alphabet[extra]
 
         else:
@@ -31,7 +31,7 @@ def decrypt(text, shift):
             if 0 <= newIdx < len(alphabet):
                 decrypted += alphabet[newIdx]
             else:
-                extra = newIdx + len(alphabet)
+                extra = newIdx % len(alphabet)
                 decrypted += alphabet[extra]
         else:
             decrypted += letter
@@ -62,6 +62,7 @@ def to_continue():
         if question[0].lower() == 'y':
             to_continue()
         else:
+            print('Goodbye')
             again = False
 
 
