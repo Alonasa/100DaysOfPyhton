@@ -3,17 +3,19 @@ alphabet = [
     'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 ]
 
-def encrypt(text, shift):
+def crypt(text, shift, type):
     encrypted = ''
     for letter in text:
         if letter in alphabet:
             index = alphabet.index(letter)
-            newIdx = index + shift
-            if newIdx < len(alphabet):
-                encrypted += alphabet[newIdx]
+            newIdx = 0
+            if type == 'e':
+                newIdx = index + shift
             else:
-                extra = newIdx % len(alphabet)
-                encrypted += alphabet[extra]
+                newIdx = index - shift
+
+            extra = newIdx % len(alphabet)
+            encrypted += alphabet[extra]
 
         else:
             encrypted += letter
@@ -22,31 +24,13 @@ def encrypt(text, shift):
     return encrypted
 
 
-def decrypt(text, shift):
-    decrypted = ''
-    for letter in text:
-        if letter in alphabet:
-            index = alphabet.index(letter)
-            newIdx = index - shift
-            if 0 <= newIdx < len(alphabet):
-                decrypted += alphabet[newIdx]
-            else:
-                extra = newIdx % len(alphabet)
-                decrypted += alphabet[extra]
-        else:
-            decrypted += letter
-
-    print(decrypted)
-    return decrypted
-
-
 def user_direction(direction, text, shift):
     if direction[0].lower() == 'e':
-        encrypt(text, shift)
+        crypt(text, shift, 'e')
     elif direction[0].lower() == 'd':
-        decrypt(text, shift)
+        crypt(text, shift, 'd')
     else:
-        print("Sorry, but your request isn't recorgnised!")
+        return print("Sorry, but your request isn't recorgnised!\nType 'encode' or 'decode'\n")
 
 
 def to_continue():
