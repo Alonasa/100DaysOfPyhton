@@ -11,7 +11,6 @@ def make_bids():
         name = input("What's your name? ")
         bid = int(input("What's your bid?: $ "))
         bids[name] = bid
-        print(bids)
         bid_request = input("Do you like to make another bid? Yes or No ")
         if bid_request[0].lower() == 'n':
             max_value = max(bids.values())
