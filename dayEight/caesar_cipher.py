@@ -3,18 +3,18 @@ alphabet = [
     'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 ]
 
-def crypt(text, shift, type):
+
+def crypt(text, shift, action):
     encrypted = ''
     for letter in text:
         if letter in alphabet:
             index = alphabet.index(letter)
-            newIdx = 0
-            if type == 'e':
-                newIdx = index + shift
+            if action == 'e':
+                new_idx = index + shift
             else:
-                newIdx = index - shift
+                new_idx = index - shift
 
-            extra = newIdx % len(alphabet)
+            extra = new_idx % len(alphabet)
             encrypted += alphabet[extra]
 
         else:
@@ -30,7 +30,7 @@ def user_direction(direction, text, shift):
     elif direction[0].lower() == 'd':
         crypt(text, shift, 'd')
     else:
-        return print("Sorry, but your request isn't recorgnised!\nType 'encode' or 'decode'\n")
+        return print("Sorry, but your request isn't recognised!\nType 'encode' or 'decode'\n")
 
 
 def to_continue():

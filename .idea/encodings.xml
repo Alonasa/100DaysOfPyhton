@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/dayEight/caesar_cipher.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayNine/secret_auction.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daySeven/fsa.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daySeven/hangman.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daySeven/trialix.py" charset="UTF-8" />
+  </component>
+</project>
