@@ -2,42 +2,60 @@ from art import logo
 import os
 
 
+def multiply(a, b):
+    return a * b
+
+
+def add(a, b):
+    return a + b
+
+
+def subtract(a, b):
+    return a - b
+
+
+def divide(a, b):
+    return a / b
+
+
+operations = {
+    "*": multiply,
+    "+": add,
+    "-": subtract,
+    "/": divide,
+}
+
+
 def calculator(first_int, second):
     print(logo)
-    if second == False:
+    if not second:
         first_int = float(input("\nWhat's the first number?: "))
-    print("+\n-\n*\n/")
+    for item in operations:
+        print(item)
     operation = input("Pick an operation: ").strip()
     second_int = float(input("What's the next number?: "))
-    if operation == '+':
-        result = first_int + second_int
-    elif operation == '-':
-        result = first_int - second_int
-    elif operation == '/':
-        result = first_int / second_int
-    elif operation == '*':
-        result = first_int * second_int
+    get_operation = operations[operation]
+    result = get_operation(first_int, second_int)
+    print(f"{first_int} {operation} {second_int} = {result}")
 
     return result
 
 
 def repeat_calculation():
     calculate_more = True
+    result = calculator(0, False)
     while calculate_more:
-        result = calculator(0, False)
         repeat = input(f"Type 'y' to continue calculation with {result}, or type 'n' to start a new calculation: ")
         if repeat[0].lower().strip() == 'y':
             os.system("clear")
             result = calculator(result, True)
         elif repeat[0].lower().strip() == 'n':
-            calculator(0)
+            calculator(0, False)
         else:
+            print("Thank you fo using our Calculator! Good bye!!!")
             calculate_more = False
+
         print(result)
 
 
 repeat_calculation()
-
-
-
-
