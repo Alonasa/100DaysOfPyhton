@@ -59,7 +59,7 @@ player_list = []
 dealer_list = []
 
 
-def get_card(li, amount, dealer):
+def get_card(cards_list, amount, dealer):
     for item in range(amount):
         rand = random.choice(cards)
         card = cards.pop(cards.index(rand))
@@ -67,20 +67,40 @@ def get_card(li, amount, dealer):
             dealer_list.append(card)
         else:
             player_list.append(card)
-    draw_card(li, dealer)
+    draw_card(cards_list, dealer)
+
+
+def count_amount(cards_list):
+    summ = 0
+    for card in cards_list:
+        if card[0] in ('K', 'Q', 'J') or card[0:2] == '10':
+            summ += 10
+        elif card[0].isdigit():
+            value = int(card[0])
+            summ += value
+        elif card[0] == 'A':
+            if summ + 11 > 21:
+                summ += 1
+            else:
+                summ += 11
+    return summ
 
 
 def deal(amount):
     another = True
-    os.system("clear")
     print(logo)
-    get_card(player_list, amount, False)
     get_card(dealer_list, amount, True)
+    get_card(player_list, amount, False)
+
+    print(f"Your score: {count_amount(player_list)}")
 
     while another:
         deal_more = input("Type 'y' to get another card, type 'n' to pass ")
         if deal_more[0].lower().strip() == 'y':
+            os.system("clear")
+            get_card(dealer_list, 1, True)
             get_card(player_list, 1, False)
+            print(f"Your score: {count_amount(player_list)}")
 
 
 deal(2)
