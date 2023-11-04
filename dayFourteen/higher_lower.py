@@ -18,13 +18,16 @@ def get_random(items):
 
 def higher_lower():
     counter = 0
+    winner = {}
     loose = False
     while not loose:
         print(logo)
 
         a = get_random(data)
         b = get_random(data)
-
+        if len(winner) > 0:
+            a = winner
+            
         print(f"Compare A: {a['name']}, a {a['description']}, from {a['country']} ")
         print(vs)
         print(f"Against B: {b['name']}, a {b['description']}, from {b['country']} ")
@@ -40,6 +43,7 @@ def higher_lower():
             if a['follower_count'] > b['follower_count']:
                 if question.lower() == 'a':
                     counter += 1
+                    winner = a
                     print(f"You're right! Current score: {counter}")
                 else:
                     set_topscore(counter)
@@ -48,6 +52,7 @@ def higher_lower():
             elif b['follower_count'] > a['follower_count']:
                 if question.lower() == 'b':
                     counter += 1
+                    winner = b
                     print(f"You're right! Current score: {counter}")
                 else:
                     set_topscore(counter)
