@@ -160,4 +160,13 @@ def deal(amount):
                 f"Game over...\nUser: {user_score}\nDealer: {dealer_score}\n{compare_scores(user_score, dealer_score)}")
 
 
-deal(2)
+stop_play = False
+while not stop_play:
+    play_game = input('Do you like to play game? ')
+    if play_game[0].lower() == 'y':
+        player_list = []
+        dealer_list = []
+        deal(2)
+    else:
+        stop_play = True
+        print("Thank you for interest!!")
