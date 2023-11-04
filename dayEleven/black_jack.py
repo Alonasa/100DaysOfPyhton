@@ -21,10 +21,14 @@ for suit in HEARTS, DIAMONDS, SPADES, CLUBS:
     random.shuffle(cards)
 
 
-def draw_card(cards_list, is_dealer):
+def draw_card(cards_list, is_dealer, game_over):
     rows = ['', '', '', '', '', '', '', '', '', '', '']
-    if is_dealer:
+    if is_dealer and not game_over:
         print("Dealer:")
+        cards_list = cards_list[:1]
+    elif is_dealer and game_over:
+        print("Dealer: ")
+
     elif not is_dealer:
         print("Player:")
     for card in cards_list:
@@ -59,15 +63,15 @@ player_list = []
 dealer_list = []
 
 
-def get_card(cards_list, amount, dealer):
+def get_card(cards_list, amount, dealer, game_over):
     for item in range(amount):
-        rand = random.choice(cards)
+        rand = random.choice(cards_list)
         card = cards.pop(cards.index(rand))
         if dealer:
             dealer_list.append(card)
         else:
             player_list.append(card)
-    draw_card(cards_list, dealer)
+    draw_card(cards_list, dealer, game_over)
 
 
 def count_amount(cards_list):
@@ -87,20 +91,33 @@ def count_amount(cards_list):
 
 
 def deal(amount):
-    another = True
+    game_over = False
     print(logo)
-    get_card(dealer_list, amount, True)
-    get_card(player_list, amount, False)
+    get_card(dealer_list, amount, True, game_over)
+    get_card(player_list, amount, False, game_over)
 
-    print(f"Your score: {count_amount(player_list)}")
+    user_score = count_amount(player_list)
+    print(f"Your score: {user_score}")
 
-    while another:
+    while not game_over:
         deal_more = input("Type 'y' to get another card, type 'n' to pass ")
         if deal_more[0].lower().strip() == 'y':
             os.system("clear")
-            get_card(dealer_list, 1, True)
-            get_card(player_list, 1, False)
-            print(f"Your score: {count_amount(player_list)}")
+
+            get_card(dealer_list, 1, True, game_over)
+            get_card(player_list, 1, False, game_over)
+            user_score = count_amount(player_list)
+            dealer_score = count_amount(dealer_list)
+
+            print(f"Your score: {user_score}")
+            if user_score > 21:
+                os.system("clear")
+                game_over = True
+                draw_card(dealer_list, True, game_over)
+                draw_card(player_list, False, game_over)
+                print(f"Game over...\nUser: {user_score}\nDealer: {dealer_score}")
+
+                break
 
 
 deal(2)
