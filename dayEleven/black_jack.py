@@ -65,7 +65,7 @@ dealer_list = []
 
 def get_card(cards_list, amount, dealer, game_over):
     for item in range(amount):
-        rand = random.choice(cards_list)
+        rand = random.choice(cards)
         card = cards.pop(cards.index(rand))
         if dealer:
             dealer_list.append(card)
@@ -75,7 +75,11 @@ def get_card(cards_list, amount, dealer, game_over):
 
 
 def count_amount(cards_list):
+    """
+    (list of cards) -> int
+    """
     summ = 0
+    length = len(cards_list)
     for card in cards_list:
         if card[0] in ('K', 'Q', 'J') or card[0:2] == '10':
             summ += 10
@@ -87,6 +91,9 @@ def count_amount(cards_list):
                 summ += 1
             else:
                 summ += 11
+        elif length == 2 and summ == 21:
+            summ = 0
+
     return summ
 
 
@@ -110,14 +117,25 @@ def deal(amount):
             dealer_score = count_amount(dealer_list)
 
             print(f"Your score: {user_score}")
-            if user_score > 21:
+            if user_score > 21 or user_score == 0 or dealer_score == 0:
                 os.system("clear")
                 game_over = True
                 draw_card(dealer_list, True, game_over)
                 draw_card(player_list, False, game_over)
+                if user_score == 0 or dealer_score == 0:
+                    print('User win and Got a BLACKJACK' if {user_score == 0} else 'Dealer win and got a BLACKJACK')
                 print(f"Game over...\nUser: {user_score}\nDealer: {dealer_score}")
-
                 break
+        else:
+            game_over = True
+            os.system("clear")
+            user_score = count_amount(player_list)
+            dealer_score = count_amount(dealer_list)
+            draw_card(dealer_list, True, game_over)
+            draw_card(player_list, False, game_over)
+            if user_score == 0 or dealer_score == 0:
+                print('User win and Got a BLACKJACK' if {user_score == 0} else 'Dealer win and got a BLACKJACK')
+            print(f"Game over...\nUser: {user_score}\nDealer: {dealer_score}")
 
 
 deal(2)
