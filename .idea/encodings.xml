@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/dayEight/caesar_cipher.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayEleven/art.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayEleven/black_jack.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayFourteen/art.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayFourteen/game_data.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayFourteen/higher_lower.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayNine/secret_auction.py" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/daySeven/fsa.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/daySeven/hangman.py" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/daySeven/trialix.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayTen/calculator.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayTwelve/graphics.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayTwelve/guess_the_number.py" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

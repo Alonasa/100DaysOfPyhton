@@ -162,6 +162,7 @@ def deal(amount):
 
 stop_play = False
 while not stop_play:
+    os.system('clear')
     play_game = input('Do you like to play game? ')
     if play_game[0].lower() == 'y':
         player_list = []

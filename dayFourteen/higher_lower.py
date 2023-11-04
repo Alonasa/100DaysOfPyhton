@@ -1,6 +1,7 @@
 from game_data import data
 from art import logo, vs
 import random
+import os
 
 top_score = [0]
 
@@ -27,7 +28,7 @@ def higher_lower():
         b = get_random(data)
         if len(winner) > 0:
             a = winner
-            
+
         print(f"Compare A: {a['name']}, a {a['description']}, from {a['country']} ")
         print(vs)
         print(f"Against B: {b['name']}, a {b['description']}, from {b['country']} ")
@@ -69,6 +70,7 @@ def game_play():
         game_over = True
 
     while not game_over:
+        os.system('clear')
         game_play()
 
 

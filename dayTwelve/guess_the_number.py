@@ -33,7 +33,8 @@ def guess_number():
             attempts = 5
 
     while attempts > 0:
-        guess = int(input(f'Guess the number in range {MIN_VALUE} - {MAX_VALUE} \n'))
+        print(f'Guess the number in range {MIN_VALUE} - {MAX_VALUE}')
+        guess = int(input('Make a guess:  '))
         try:
             int(guess)
         except ValueError:
