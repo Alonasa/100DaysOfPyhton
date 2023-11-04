@@ -97,6 +97,26 @@ def count_amount(cards_list):
     return summ
 
 
+def compare_scores(user_score, dealer_score):
+    message = ''
+    if user_score == 0:
+        message = 'User got a BLACKJACK'
+    elif dealer_score == 0:
+        message = 'Dealer got a BLACKJACK'
+    elif user_score == dealer_score:
+        message = 'Its a Draw'
+    elif 21 >= user_score > dealer_score or user_score == 0:
+        message = 'User Win'
+    elif 21 >= dealer_score > user_score or dealer_score == 0:
+        message = 'Dealer Win'
+    elif user_score > 21:
+        message = 'User Loose'
+    elif dealer_score > 21:
+        message = 'Dealer Loose'
+
+    return message
+
+
 def deal(amount):
     game_over = False
     print(logo)
@@ -124,7 +144,8 @@ def deal(amount):
                 draw_card(player_list, False, game_over)
                 if user_score == 0 or dealer_score == 0:
                     print('User win and Got a BLACKJACK' if {user_score == 0} else 'Dealer win and got a BLACKJACK')
-                print(f"Game over...\nUser: {user_score}\nDealer: {dealer_score}")
+                print(
+                    f"Game over...\nUser: {user_score}\nDealer: {dealer_score}\n{compare_scores(user_score, dealer_score)}")
                 break
         else:
             game_over = True
@@ -135,7 +156,8 @@ def deal(amount):
             draw_card(player_list, False, game_over)
             if user_score == 0 or dealer_score == 0:
                 print('User win and Got a BLACKJACK' if {user_score == 0} else 'Dealer win and got a BLACKJACK')
-            print(f"Game over...\nUser: {user_score}\nDealer: {dealer_score}")
+            print(
+                f"Game over...\nUser: {user_score}\nDealer: {dealer_score}\n{compare_scores(user_score, dealer_score)}")
 
 
 deal(2)
