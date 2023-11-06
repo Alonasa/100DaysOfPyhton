@@ -1,5 +1,4 @@
-from resources import MENU
-from decimal import Decimal, ROUND_HALF_UP
+from resources import MENU, resources
 
 
 def get_coins():
@@ -44,7 +43,7 @@ def get_input():
             summ = counter(money)
 
             if summ == price:
-                print(f"Your {info} start cooking")
+                print(f"Your {info.capitalize()} start cooking")
                 break
             elif summ < price:
                 difference = price - summ
@@ -54,13 +53,27 @@ def get_input():
                     summ += counter(extra_coins)
                     if summ >= price:
                         print(
-                            f"Your drink start cooking.\nPlease take your change {round(abs(summ - price), 2)}")
+                            f"Your {info.capitalize()} start cooking.\nPlease take your change {round(abs(summ - price), 2)}")
                         break
                     difference = price - summ
                     print(f"Money insert left {round(difference, 2)}")
             else:
                 print(f"Please take your change {round(abs(summ - price), 2)}!!!")
                 break
+
+    elif info == "report":
+        for key, value in resources.items():
+            end = ""
+            begin = ""
+            if key in ("water", "milk"):
+                end = "ml"
+            elif key == "coffee":
+                end = "g"
+            elif key == "money":
+                begin = "$"
+
+            print(f"{key.upper()}: {begin}{value}{end}")
+
 
     else:
         print(f"Sorry, wrong input")
