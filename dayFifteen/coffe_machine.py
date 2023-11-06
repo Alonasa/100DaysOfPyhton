@@ -38,17 +38,20 @@ def counter(money):
 
 
 def check_resources(drink):
+    is_enough = []
+    print("Checking resources....")
+    time.sleep(0.5)
     for key, value in MENU[drink]["ingredients"].items():
         for resource, amount in resources.items():
-            print("Checking resources....")
-            time.sleep(0.5)
             if key == resource:
                 if amount >= value:
-                    amount -= value
-                    return True
+                    resources[resource] -= value
+                    is_enough.append(True)
                 else:
                     print(f"Sorry, there isn't enough {key} left")
-                    return False
+                    is_enough = []
+    if len(is_enough) == 3:
+        return True
 
 
 def make_report():
@@ -70,7 +73,6 @@ def make_coffe(info):
         price = MENU[info]["cost"]
         if check_resources(info):
             print(f"Price: {price}$")
-
             while True:
                 money = get_coins()
                 summ = counter(money)
