@@ -1,3 +1,5 @@
+import time
+
 from resources import MENU, resources
 
 
@@ -11,6 +13,8 @@ def get_coins():
                     insert = input(f"How many {item}? ")
                     if insert.strip() == "":
                         print("Please enter a valid integer value")
+                    elif int(insert) < 0:
+                        print("Value cannot be less than zero.")
                     else:
                         inserted[str(coin_list[item])] = int(insert)
                         break
@@ -32,10 +36,25 @@ def counter(money):
     return summ
 
 
+def check_resources(drink):
+    for key, value in MENU[drink]["ingredients"].items():
+        for resource, amount in resources.items():
+            if key == resource:
+                if amount > value:
+                    amount -= value
+                    return True
+                else:
+                    print(f"Sorry, there isn't enough {key} left {value - amount}")
+                    return False
+
+
 def get_input():
     info = input("What would you like? (espresso/latte/cappuccino) ").lower()
     if info in MENU:
         price = MENU[info]["cost"]
+        if check_resources(info):
+            print("Checking resources....")
+            time.sleep(0.5)
         print(f"Price: {price}$")
 
         while True:
@@ -44,6 +63,7 @@ def get_input():
 
             if summ == price:
                 print(f"Your {info.capitalize()} start cooking")
+                resources["money"] += price
                 break
             elif summ < price:
                 difference = price - summ
@@ -52,12 +72,14 @@ def get_input():
                     extra_coins = get_coins()
                     summ += counter(extra_coins)
                     if summ >= price:
+                        resources["money"] += price
                         print(
                             f"Your {info.capitalize()} start cooking.\nPlease take your change {round(abs(summ - price), 2)}")
                         break
                     difference = price - summ
                     print(f"Money insert left {round(difference, 2)}")
             else:
+                resources["money"] += price
                 print(f"Please take your change {round(abs(summ - price), 2)}!!!")
                 break
 
