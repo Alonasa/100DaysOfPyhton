@@ -1,3 +1,4 @@
+import os
 import time
 
 from resources import MENU, resources
@@ -39,66 +40,92 @@ def counter(money):
 def check_resources(drink):
     for key, value in MENU[drink]["ingredients"].items():
         for resource, amount in resources.items():
+            print("Checking resources....")
+            time.sleep(0.5)
             if key == resource:
-                if amount > value:
+                if amount >= value:
                     amount -= value
                     return True
                 else:
-                    print(f"Sorry, there isn't enough {key} left {value - amount}")
+                    print(f"Sorry, there isn't enough {key} left")
                     return False
 
 
-def get_input():
-    info = input("What would you like? (espresso/latte/cappuccino) ").lower()
-    if info in MENU:
+def make_report():
+    for key, value in resources.items():
+        end = ""
+        begin = ""
+        if key in ("water", "milk"):
+            end = "ml"
+        elif key == "coffee":
+            end = "g"
+        elif key == "money":
+            begin = "$"
+
+        print(f"{key.upper()}: {begin}{value}{end}")
+
+
+def make_coffe(info):
+    if info.lower() in MENU:
         price = MENU[info]["cost"]
         if check_resources(info):
-            print("Checking resources....")
-            time.sleep(0.5)
-        print(f"Price: {price}$")
+            print(f"Price: {price}$")
 
-        while True:
-            money = get_coins()
-            summ = counter(money)
+            while True:
+                money = get_coins()
+                summ = counter(money)
 
-            if summ == price:
-                print(f"Your {info.capitalize()} start cooking")
-                resources["money"] += price
-                break
-            elif summ < price:
-                difference = price - summ
-                print(f"You need to insert {round(difference, 2)}")
-                while True:
-                    extra_coins = get_coins()
-                    summ += counter(extra_coins)
-                    if summ >= price:
-                        resources["money"] += price
-                        print(
-                            f"Your {info.capitalize()} start cooking.\nPlease take your change {round(abs(summ - price), 2)}")
-                        break
+                if summ == price:
+                    resources["money"] += price
+                    print(f"Here is your {info.capitalize()}. Enjoy!")
+                    break
+                elif summ < price:
                     difference = price - summ
-                    print(f"Money insert left {round(difference, 2)}")
+                    print(f"You need to insert {round(difference, 2)}")
+                    check_continue = input("Press 1 to add more coins or other key to Quit ")
+                    if check_continue == '1':
+                        while True:
+                            extra_coins = get_coins()
+                            summ += counter(extra_coins)
+                            if summ >= price:
+                                resources["money"] += price
+                                print(
+                                    f"Here is your {info.capitalize()}. Enjoy!"
+                                    f"Please take your change {round(abs(summ - price), 2)}")
+                                break
+                            difference = price - summ
+                            print(f"Money insert left {round(difference, 2)}")
+                    else:
+                        print(f"Please don't forget your change {summ}")
+                else:
+                    resources["money"] += price
+                    print(f"Please take your change {round(abs(summ - price), 2)}!!!")
+                    break
+    elif info.lower() == "report":
+        make_report()
+    elif info == "maintenance":
+        print(resources)
+        for resource in resources:
+            amt = int(input(f"Add amount for {'withdraw ' if resource == 'money' else ''}{resource} "))
+            if resource == "money":
+                resources[resource] -= amt
             else:
-                resources["money"] += price
-                print(f"Please take your change {round(abs(summ - price), 2)}!!!")
-                break
-
-    elif info == "report":
-        for key, value in resources.items():
-            end = ""
-            begin = ""
-            if key in ("water", "milk"):
-                end = "ml"
-            elif key == "coffee":
-                end = "g"
-            elif key == "money":
-                begin = "$"
-
-            print(f"{key.upper()}: {begin}{value}{end}")
-
-
+                resources[resource] += amt
+        print(resources)
+        print("Maintenance completed.")
     else:
         print(f"Sorry, wrong input")
 
 
-get_input()
+def coffe_machine():
+    os.system("clear")
+    while True:
+        info = input("What would you like? (espresso/latte/cappuccino) ").lower()
+        if info == "off":
+            print("Machine on maintenance")
+            break
+        else:
+            make_coffe(info)
+
+
+coffe_machine()
