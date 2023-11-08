@@ -11,9 +11,7 @@ till = MoneyMachine()
 # item = MenuItem()
 
 
-def caffe():
-    drink = input(f"Please choose your drink from menu {my_menu.get_items()} ").lower().strip()
-
+def caffe(drink):
     if my_menu.find_drink(drink):
         for el in my_menu.menu:
             if el.name == drink:
@@ -21,6 +19,19 @@ def caffe():
                     print(f"Price of your drink is ${el.cost}")
                     if till.make_payment(el.cost):
                         coffee.make_coffee(el)
+    elif drink == 'report':
+        coffee.report()
+        till.report()
 
 
-caffe()
+def barista():
+    while True:
+        drink = input(f"Please choose your drink from menu {my_menu.get_items()} ").lower().strip()
+        if drink == 'off':
+            print("Thank you for using our coffee machine!!!")
+            return False
+        else:
+            caffe(drink)
+
+
+barista()
