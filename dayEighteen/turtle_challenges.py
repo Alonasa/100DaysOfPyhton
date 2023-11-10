@@ -1,8 +1,20 @@
+import random
+import turtle
 from turtle import Turtle, Screen
 
+turtle.colormode(255)
 turtle_char = Turtle()
-turtle_char.shape("turtle")
+turtle_char.shape("arrow")
 turtle_char.color("green")
+
+
+def get_color():
+    r = random.randint(0, 255)
+    g = random.randint(0, 255)
+    b = random.randint(0, 255)
+
+    color = (r, g, b)
+    return color
 
 
 def square():
@@ -23,26 +35,33 @@ def dashed():
         turtle_char.down()
 
 
-colors = ['purple', 'light blue', 'pink', 'light green', 'violet', 'yellow', 'orange']
-
-
 def fig(angles, color):
     count = 0
     angle = 360 / angles
     while count < angles:
         count += 1
-        turtle_char.color(colors[color])
+        turtle_char.color(color)
         turtle_char.backward(90)
         turtle_char.left(angle)
 
 
 def shell():
-    idx = 0
     for item in range(3, 10):
-        fig(item, idx)
-        idx += 1
+        color = get_color()
+        fig(item, color)
 
 
-shell()
+def spirograph():
+    deg = 6
+    counter = 360 / deg
+
+    while counter > 0:
+        counter -= 1
+        turtle_char.pencolor(get_color())
+        turtle_char.circle(100)
+        turtle_char.left(deg)
+
+
+spirograph()
 
 screen = Screen()
