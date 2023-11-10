@@ -23,4 +23,26 @@ def dashed():
         turtle_char.down()
 
 
+colors = ['purple', 'light blue', 'pink', 'light green', 'violet', 'yellow', 'orange']
+
+
+def fig(angles, color):
+    count = 0
+    angle = 360 / angles
+    while count < angles:
+        count += 1
+        turtle_char.color(colors[color])
+        turtle_char.backward(90)
+        turtle_char.left(angle)
+
+
+def shell():
+    idx = 0
+    for item in range(3, 10):
+        fig(item, idx)
+        idx += 1
+
+
+shell()
+
 screen = Screen()
