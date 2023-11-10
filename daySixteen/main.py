@@ -8,9 +8,6 @@ coffee = CoffeeMaker()
 till = MoneyMachine()
 
 
-# item = MenuItem()
-
-
 def caffe(drink):
     if my_menu.find_drink(drink):
         for el in my_menu.menu:
