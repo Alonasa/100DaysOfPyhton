@@ -2,10 +2,6 @@ import random
 import turtle
 from turtle import Turtle, Screen
 
-fig = Turtle()
-
-turtle.colormode(255)
-
 
 def pick_color():
     r = random.randint(0, 255)
@@ -15,8 +11,29 @@ def pick_color():
     return color
 
 
+screen = Screen()
+turtle.colormode(255)
+WIDTH = 500
+HEIGHT = 400
+screen.setup(WIDTH, HEIGHT)
+screen.textinput("Make your bet!!!", "Who will win?")
+
+
 def move_forw():
-    fig.fd(10)
+    value = random.randint(0, 100)
+    fig.fd(value)
+
+
+y = [-100, -70, -40, -10, 20, 50, 70]
+
+for turtles in range(0, 6):
+    fig = Turtle()
+    fig.shape("turtle")
+    fig.color(pick_color())
+    fig.penup()
+    fig.goto(x=-240.0, y=y[turtles])
+    fig.pendown()
+    screen.onkeypress(move_forw, "Up")
 
 
 def move_backw():
@@ -29,6 +46,12 @@ def move_left():
 
 def move_right():
     fig.rt(10)
+
+
+def clear():
+    fig.clear()
+    fig.home()
+    fig.pendown()
 
 
 def hilo(a, b, c):
@@ -48,12 +71,9 @@ def complement(color):
 
 
 col = pick_color()
-screen = Screen()
-screen.onkeypress(move_forw, "Up")
 screen.onkeypress(move_backw, "Down")
 screen.onkeypress(move_left, "Left")
 screen.onkeypress(move_right, "Right")
+screen.onkeypress(clear, "c")
 screen.listen()
-fig.pencolor(complement(col))
-screen.bgcolor(pick_color())
 screen.exitonclick()
