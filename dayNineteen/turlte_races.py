@@ -16,42 +16,41 @@ turtle.colormode(255)
 WIDTH = 500
 HEIGHT = 400
 screen.setup(WIDTH, HEIGHT)
-screen.textinput("Make your bet!!!", "Who will win?")
+bet = int(screen.textinput("Make your bet!!!", "Who will win?"))
 
 
 def move_forw():
-    value = random.randint(0, 100)
-    fig.fd(value)
+    fig.fd(10)
 
 
 y = [-100, -70, -40, -10, 20, 50, 70]
 
+turtle_list = []
+
 for turtles in range(0, 6):
+    colour = pick_color()
     fig = Turtle()
     fig.shape("turtle")
-    fig.color(pick_color())
+    fig.color(colour)
     fig.penup()
     fig.goto(x=-240.0, y=y[turtles])
     fig.pendown()
-    screen.onkeypress(move_forw, "Up")
+    turtle_list.append(fig)
 
+is_race = True
+while is_race:
+    for turtl in turtle_list:
+        turtle_list[bet].pensize(5)
+        value = random.randint(0, 15)
+        turtl.fd(value)
+        if turtl.xcor() > 230:
+            idx = turtle_list.index(turtl)
+            if bet == idx:
+                print(f"The turtle {bet} are WON!")
+            else:
+                print(f"Sorry but your turtle {bet} lost and turtle {idx} Win")
 
-def move_backw():
-    fig.bk(10)
-
-
-def move_left():
-    fig.lt(10)
-
-
-def move_right():
-    fig.rt(10)
-
-
-def clear():
-    fig.clear()
-    fig.home()
-    fig.pendown()
+            is_race = False
 
 
 def hilo(a, b, c):
@@ -71,9 +70,5 @@ def complement(color):
 
 
 col = pick_color()
-screen.onkeypress(move_backw, "Down")
-screen.onkeypress(move_left, "Left")
-screen.onkeypress(move_right, "Right")
-screen.onkeypress(clear, "c")
 screen.listen()
 screen.exitonclick()
