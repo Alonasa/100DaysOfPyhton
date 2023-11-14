@@ -34,19 +34,18 @@ for turtles in range(0, 6):
     fig.color(colour)
     fig.penup()
     fig.goto(x=-240.0, y=y[turtles])
-    fig.pendown()
     turtle_list.append(fig)
 
 is_race = True
 while is_race:
     for turtl in turtle_list:
-        turtle_list[bet].pensize(5)
+        turtle_list[bet].pendown()
         value = random.randint(0, 15)
         turtl.fd(value)
         if turtl.xcor() > 230:
             idx = turtle_list.index(turtl)
             if bet == idx:
-                print(f"The turtle {bet} are WON!")
+                print(f"Your turtle {bet} are WON!!! Congratulations🔥🔥🔥")
             else:
                 print(f"Sorry but your turtle {bet} lost and turtle {idx} Win")
 
