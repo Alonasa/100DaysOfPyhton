@@ -6,9 +6,9 @@ from scoreboard import Score
 
 screen = Screen()
 WIDTH = 1000
-HEIGHT = 600
-MAX_X = int(WIDTH / 2) - 5
-MAX_Y = int(HEIGHT / 2) - 5
+HEIGHT = 500
+MAX_X = int(WIDTH / 2) - 7
+MAX_Y = int(HEIGHT / 2) - 7
 screen.setup(WIDTH, HEIGHT)
 screen.bgcolor("black")
 screen.title("Snake Game")
@@ -16,7 +16,7 @@ screen.tracer(0)
 
 new_snake = Snake()
 new_food = Food()
-score = Score()
+score = Score(MAX_Y)
 
 screen.listen()
 screen.onkey(new_snake.up, "Up")
@@ -28,7 +28,7 @@ no_wall = True
 
 while no_wall:
     screen.update()
-    time.sleep(0.2)
+    time.sleep(0.07)
     new_snake.move()
     check_pos = new_food.pos()
 
@@ -37,7 +37,12 @@ while no_wall:
         new_snake.eat_food()
         new_snake.update()
         new_food.move_food(MAX_X, MAX_Y)
-    if new_snake.head.xcor() > MAX_X or new_snake.head.xcor() < -MAX_X or new_snake.head.ycor() > MAX_Y or new_snake.head.ycor() < -MAX_Y:
+
+    if int(score.text) > 5:
+        time.sleep(0.005)
+
+    if (new_snake.head.xcor() > MAX_X or new_snake.head.xcor() < -MAX_X or
+            new_snake.head.ycor() > MAX_Y or new_snake.head.ycor() < -MAX_Y):
         score.game_over()
         no_wall = False
 

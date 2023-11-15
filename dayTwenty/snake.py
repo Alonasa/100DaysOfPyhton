@@ -16,21 +16,19 @@ class Snake(Turtle):
         self.head = self.snake_body[0]
 
     def eat_food(self):
-        lenght = len(STARTING_POSITIONS)
-        item = STARTING_POSITIONS[lenght - 1][0] - 5
-        STARTING_POSITIONS.append((item, 0))
-        print(STARTING_POSITIONS)
-        print(len(self.snake_body))
-        self.create_snake()
+        self.add_part(self.snake_body[-1].position())
 
     def create_snake(self):
         for position in STARTING_POSITIONS:
-            snake = Turtle("square")
-            snake.shapesize(0.5, 0.5)
-            snake.penup()
-            snake.color("white")
-            snake.goto(position)
-            self.snake_body.append(snake)
+            self.add_part(position)
+
+    def add_part(self, position):
+        part = Turtle("square")
+        part.shapesize(0.5, 0.5)
+        part.penup()
+        part.color("white")
+        part.goto(position)
+        self.snake_body.append(part)
 
     def move(self):
         for seg_num in range(len(self.snake_body) - 1, 0, -1):

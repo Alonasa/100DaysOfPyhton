@@ -5,11 +5,11 @@ ALIGNMENT = "center"
 
 
 class Score(Turtle):
-    def __init__(self):
+    def __init__(self, y):
         super().__init__()
         self.text = 0
         self.penup()
-        self.goto(0, 280)
+        self.goto(0, y - 20)
         self.color("white")
         self.hideturtle()
 
@@ -22,7 +22,7 @@ class Score(Turtle):
         self.print_score()
 
     def game_over(self):
-        self.text = "GAME OVER"
         self.goto(-120, 0)
+        self.text = "GAME OVER"
         self.color("yellow")
         self.write(self.text, font=("Courier", 40, "bold"))
