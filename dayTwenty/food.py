@@ -5,14 +5,13 @@ import random
 class Food(Turtle):
     def __init__(self):
         super().__init__()
-        self.shape("square")
+        self.shape("circle")
         self.color("green")
         self.penup()
-        self.shapesize(0.5, 0.5)
+        self.shapesize(0.3, 0.3)
+        self.speed("fastest")
 
     def move_food(self, width, height):
-        pos_x = int(width / 2 - 5)
-        pos_y = int(height / 2 - 5)
-        x = random.randint(-pos_x, pos_x)
-        y = random.randint(-pos_y, pos_y)
+        x = random.randint(-width, width)
+        y = random.randint(-height, height)
         self.goto(x, y)

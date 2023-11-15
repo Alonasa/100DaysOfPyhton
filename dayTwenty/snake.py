@@ -17,11 +17,13 @@ class Snake(Turtle):
 
     def eat_food(self):
         lenght = len(STARTING_POSITIONS)
-        item = STARTING_POSITIONS[lenght - 1][0] - 10
+        item = STARTING_POSITIONS[lenght - 1][0] - 5
         STARTING_POSITIONS.append((item, 0))
+        print(STARTING_POSITIONS)
+        print(len(self.snake_body))
+        self.create_snake()
 
     def create_snake(self):
-        print(STARTING_POSITIONS)
         for position in STARTING_POSITIONS:
             snake = Turtle("square")
             snake.shapesize(0.5, 0.5)
@@ -37,8 +39,8 @@ class Snake(Turtle):
             self.snake_body[seg_num].goto(new_x, new_y)
         self.head.forward(MOVE_DISTANCE)
 
-    def grow_snake(self):
-        self.create_snake()
+    def update(self):
+        self.getscreen().update()
 
     def turn_left(self):
         if self.head.heading() != RIGHT:
