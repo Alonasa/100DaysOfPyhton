@@ -15,4 +15,4 @@ class Food(Turtle):
         pos_y = int(height / 2 - 5)
         x = random.randint(-pos_x, pos_x)
         y = random.randint(-pos_y, pos_y)
-        return x, y
+        self.goto(x, y)

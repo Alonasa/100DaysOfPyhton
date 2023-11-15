@@ -26,13 +26,11 @@ while no_wall:
     screen.update()
     time.sleep(0.2)
     new_snake.move()
-    print(new_snake.pos())
-    print(new_food.pos())
+    check_pos = new_food.pos()
 
-    if new_snake.pos() == new_food.pos():
+    if new_snake.head.distance(new_food) < 7:
         new_snake.eat_food()
-        new_snake.create_snake()
-        move = new_food.move_food(WIDTH - 5, HEIGHT - 5)
-        new_food.goto(move)
+        new_snake.grow_snake()
+        new_food.move_food(WIDTH - 5, HEIGHT - 5)
 
 screen.exitonclick()
