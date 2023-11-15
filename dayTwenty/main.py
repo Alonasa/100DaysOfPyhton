@@ -5,7 +5,7 @@ from food import Food
 from scoreboard import Score
 
 screen = Screen()
-WIDTH = 1000
+WIDTH = 500
 HEIGHT = 500
 MAX_X = int(WIDTH / 2) - 7
 MAX_Y = int(HEIGHT / 2) - 7
@@ -24,9 +24,9 @@ screen.onkey(new_snake.down, "Down")
 screen.onkey(new_snake.turn_left, "Left")
 screen.onkey(new_snake.turn_right, "Right")
 
-no_wall = True
+game_play = True
 
-while no_wall:
+while game_play:
     screen.update()
     time.sleep(0.07)
     new_snake.move()
@@ -44,6 +44,13 @@ while no_wall:
     if (new_snake.head.xcor() > MAX_X or new_snake.head.xcor() < -MAX_X or
             new_snake.head.ycor() > MAX_Y or new_snake.head.ycor() < -MAX_Y):
         score.game_over()
-        no_wall = False
+        game_play = False
+
+    for part in new_snake.snake_body:
+        if part == new_snake.head:
+            pass
+        elif new_snake.head.distance(part) < 2:
+            game_play = False
+            score.game_over()
 
 screen.exitonclick()
