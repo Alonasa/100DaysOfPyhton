@@ -2,17 +2,13 @@ from turtle import Turtle
 import random
 
 
-class Food:
+class Food(Turtle):
     def __init__(self):
-        self.create_food()
-        self.pos = ()
-
-    def create_food(self):
-        dot = Turtle("square")
-        dot.shapesize(0.5, 0.5)
-        dot.color("white")
-        dot.penup()
-        dot.goto(x=50.0, y=0.0)
+        super().__init__()
+        self.shape("square")
+        self.color("green")
+        self.penup()
+        self.shapesize(0.5, 0.5)
 
     def move_food(self, width, height):
         pos_x = int(width / 2 - 5)

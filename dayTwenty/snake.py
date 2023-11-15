@@ -8,11 +8,18 @@ LEFT = 180
 RIGHT = 0
 
 
-class Snake:
+class Snake(Turtle):
     def __init__(self):
+        super().__init__()
         self.snake_body = []
         self.create_snake()
         self.head = self.snake_body[0]
+
+    def eat_food(self):
+        lenght = len(STARTING_POSITIONS)
+        item = STARTING_POSITIONS[lenght - 1][0] - 10
+        STARTING_POSITIONS.append((item, 0))
+        print(STARTING_POSITIONS)
 
     def create_snake(self):
         for position in STARTING_POSITIONS:
@@ -30,11 +37,11 @@ class Snake:
             self.snake_body[seg_num].goto(new_x, new_y)
         self.head.forward(MOVE_DISTANCE)
 
-    def left(self):
+    def turn_left(self):
         if self.head.heading() != RIGHT:
             self.head.setheading(LEFT)
 
-    def right(self):
+    def turn_right(self):
         if self.head.heading() != LEFT:
             self.head.setheading(RIGHT)
 
