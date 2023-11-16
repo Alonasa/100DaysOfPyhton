@@ -28,7 +28,7 @@ game_play = True
 
 while game_play:
     screen.update()
-    time.sleep(0.07)
+    time.sleep(0.05)
     new_snake.move()
     check_pos = new_food.pos()
 
@@ -38,15 +38,12 @@ while game_play:
         new_snake.update()
         new_food.move_food(MAX_X, MAX_Y)
 
-    if int(score.text) > 5:
-        time.sleep(0.005)
-
     if (new_snake.head.xcor() > MAX_X or new_snake.head.xcor() < -MAX_X or
             new_snake.head.ycor() > MAX_Y or new_snake.head.ycor() < -MAX_Y):
         score.game_over()
         game_play = False
 
-    for part in new_snake.snake_body:
+    for part in new_snake.snake_body[1:]:
         if part == new_snake.head:
             pass
         elif new_snake.head.distance(part) < 2:
