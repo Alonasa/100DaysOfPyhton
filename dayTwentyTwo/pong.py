@@ -8,7 +8,7 @@ from score import Score
 
 HEIGHT = 600
 WIDTH = 800
-MAX_SCORE = 2
+MAX_SCORE = 20
 
 screen = Screen()
 screen.setup(WIDTH, HEIGHT)
@@ -51,8 +51,11 @@ score.update_scoreboard()
 
 while game_is_on:
     screen.update()
-    time.sleep(0.05)
+    SPEED = 0.01
     ball.move()
+
+    time.sleep(ball.move_speed)
+
     if ball.ycor() > 280 or ball.ycor() < -280:
         ball.bounce_y()
     if ball.distance(current_paddle) < 30 and ball.xcor() > 320 or ball.distance(
