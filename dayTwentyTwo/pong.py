@@ -2,6 +2,7 @@
 from turtle import Screen
 from main_screen import MiddleLine
 from paddle import Paddle
+from ball import Ball
 
 HEIGHT = 600
 WIDTH = 800
@@ -12,9 +13,10 @@ screen.bgcolor("black")
 screen.title("Pong")
 screen.tracer(0)
 dashed = MiddleLine(HEIGHT).draw_dashed()
-paddl1 = Paddle(WIDTH / 2 - 30, HEIGHT)
-paddl2 = Paddle(-WIDTH / 2 + 30, HEIGHT)
-current_paddle = paddl1
+r_paddl = Paddle(WIDTH / 2 - 30, HEIGHT)
+l_paddl = Paddle(-WIDTH / 2 + 30, HEIGHT)
+current_paddle = r_paddl
+ball = Ball()
 
 screen.listen()
 screen.onkey(current_paddle.move_up, "w")
