@@ -10,13 +10,19 @@ screen = Screen()
 screen.setup(WIDTH, HEIGHT)
 screen.bgcolor("black")
 screen.title("Pong")
+screen.tracer(0)
 dashed = MiddleLine(HEIGHT).draw_dashed()
-paddl1 = Paddle(WIDTH / 2 - 30)
-paddl2 = Paddle(-WIDTH / 2 + 30)
+paddl1 = Paddle(WIDTH / 2 - 30, HEIGHT)
+paddl2 = Paddle(-WIDTH / 2 + 30, HEIGHT)
 current_paddle = paddl1
 
 screen.listen()
 screen.onkey(current_paddle.move_up, "Up")
 screen.onkey(current_paddle.move_down, "Down")
+
+game_is_on = True
+
+while game_is_on:
+    screen.update()
 
 screen.exitonclick()
