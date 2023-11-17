@@ -4,9 +4,11 @@ from main_screen import MiddleLine
 from paddle import Paddle
 from ball import Ball
 import time
+from score import Score
 
 HEIGHT = 600
 WIDTH = 800
+MAX_SCORE = 2
 
 screen = Screen()
 screen.setup(WIDTH, HEIGHT)
@@ -29,7 +31,7 @@ def change_paddle():
 
 
 ball = Ball()
-screen.listen()
+score = Score()
 
 
 def move_current_paddle_up():
@@ -40,14 +42,16 @@ def move_current_paddle_down():
     current_paddle.move_down()
 
 
+screen.listen()
 screen.onkey(move_current_paddle_up, "w")
 screen.onkey(move_current_paddle_down, "s")
 
 game_is_on = True
+score.update_scoreboard()
 
 while game_is_on:
-    time.sleep(0.1)
     screen.update()
+    time.sleep(0.05)
     ball.move()
     if ball.ycor() > 280 or ball.ycor() < -280:
         ball.bounce_y()
@@ -56,7 +60,17 @@ while game_is_on:
         current_paddle = change_paddle()
         ball.bounce_x()
 
-    if ball.xcor() > 380 or ball.xcor() < -380:
+    if ball.xcor() > 380:
         ball.reset_position()
+        score.l_point()
+
+    if ball.xcor() < -380:
+        ball.reset_position()
+        score.r_point()
+
+    if score.l_score > MAX_SCORE or score.r_score > MAX_SCORE:
+        ball.reset_position()
+        score.game_over("Left side\nplayer loose!") if score.l_score < score.r_score else score.game_over(
+            "Right side\nplayer loose!")
 
 screen.exitonclick()
