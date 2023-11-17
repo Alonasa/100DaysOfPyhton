@@ -17,8 +17,8 @@ paddl2 = Paddle(-WIDTH / 2 + 30, HEIGHT)
 current_paddle = paddl1
 
 screen.listen()
-screen.onkey(current_paddle.move_up, "Up")
-screen.onkey(current_paddle.move_down, "Down")
+screen.onkey(current_paddle.move_up, "w")
+screen.onkey(current_paddle.move_down, "s")
 
 game_is_on = True
 

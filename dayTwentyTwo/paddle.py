@@ -14,14 +14,14 @@ class Paddle(Turtle):
 
     def move_up(self):
         if self.ycor() < self.h / 2 - 50:
-            y = self.ycor() + 40
+            y = self.ycor() + 50
             self.goto(self.xcor(), y)
         else:
             self.move_down()
 
     def move_down(self):
         if self.ycor() > -self.h / 2 + 50:
-            y = self.ycor() - 40
+            y = self.ycor() - 50
             self.goto(self.xcor(), y)
         else:
             self.move_up()
