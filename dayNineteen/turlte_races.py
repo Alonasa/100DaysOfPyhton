@@ -16,26 +16,22 @@ turtle.colormode(255)
 WIDTH = 500
 HEIGHT = 400
 screen.setup(WIDTH, HEIGHT)
-bet = int(screen.textinput("Make your bet!!!", "Who will win?"))
-
-
-def move_forw():
-    fig.fd(10)
-
+screen.bgcolor('black')
 
 y = [-100, -70, -40, -10, 20, 50, 70]
 
 turtle_list = []
 
-for turtles in range(0, 6):
+for turtles in range(1, 7):
     colour = pick_color()
     fig = Turtle()
     fig.shape("turtle")
     fig.color(colour)
     fig.penup()
-    fig.goto(x=-240.0, y=y[turtles])
+    fig.goto(x=-230.0, y=y[turtles])
     turtle_list.append(fig)
 
+bet = int(screen.textinput("Make your bet!!!", "Who will win?")) - 1
 is_race = True
 while is_race:
     for turtl in turtle_list:
@@ -47,7 +43,7 @@ while is_race:
             if bet == idx:
                 print(f"Your turtle {bet} are WON!!! Congratulations🔥🔥🔥")
             else:
-                print(f"Sorry but your turtle {bet} lost and turtle {idx} Win")
+                print(f"Sorry but your turtle {bet + 1} lost and turtle {idx} Win")
 
             is_race = False
 
@@ -68,6 +64,5 @@ def complement(color):
     return tuple(k - u for u in (r, g, b))
 
 
-col = pick_color()
 screen.listen()
 screen.exitonclick()

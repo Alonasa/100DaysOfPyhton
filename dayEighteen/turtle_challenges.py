@@ -65,3 +65,4 @@ def spirograph():
 spirograph()
 
 screen = Screen()
+screen.exitonclick()
