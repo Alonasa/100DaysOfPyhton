@@ -8,6 +8,7 @@ screen = Screen()
 screen.setup(width=600, height=600)
 screen.tracer(0)
 p = Player()
+s = Scoreboard()
 screen.listen()
 screen.onkey(p.move, "Up")
 
@@ -15,3 +16,6 @@ game_is_on = True
 while game_is_on:
     time.sleep(0.1)
     screen.update()
+    s.show_level()
+    if p.ycor() > 290:
+        s.change_level()
