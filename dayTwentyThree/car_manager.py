@@ -4,6 +4,7 @@ from turtle import Turtle
 COLORS = ["red", "orange", "yellow", "green", "blue", "purple"]
 STARTING_MOVE_DISTANCE = 5
 MOVE_INCREMENT = 10
+FONT = ("Courier", 30, "bold")
 
 
 class CarManager(Turtle):
@@ -11,6 +12,7 @@ class CarManager(Turtle):
         super().__init__()
         self.cars = []
         self.hideturtle()
+        self.text = ""
 
     def create_car(self):
         generator = random.randint(1, 6)
@@ -27,3 +29,9 @@ class CarManager(Turtle):
     def move_cars(self):
         for car in self.cars:
             car.backward(STARTING_MOVE_DISTANCE)
+
+    def game_over(self):
+        self.text = "Game over"
+        self.color("red")
+        self.write(f"{self.text}\n  😭😭😭", align="center", font=FONT)
+        self.goto(0, 0)
