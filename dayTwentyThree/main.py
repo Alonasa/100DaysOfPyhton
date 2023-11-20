@@ -19,6 +19,8 @@ while game_is_on:
     time.sleep(0.1)
     screen.update()
     counter = 0
+    c.create_car()
+    c.move_cars()
 
     while counter < 1:
         if p.ycor() == 290:
