@@ -25,4 +25,5 @@ while game_is_on:
     while counter < 1:
         if p.ycor() == 290:
             s.change_level()
+            p.starting_position()
         counter += 1

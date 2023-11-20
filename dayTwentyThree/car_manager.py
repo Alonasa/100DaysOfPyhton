@@ -14,7 +14,7 @@ class CarManager(Turtle):
     def create_car(self):
         car = Turtle("square")
         car.shapesize(0.5, 2.5)
-        y_pos = random.randint(-260, 290)
+        y_pos = random.randint(-260, 260)
         car.penup()
         car.color(random.choice(COLORS))
         car.goto(300, y_pos)
