@@ -18,12 +18,13 @@ game_is_on = True
 while game_is_on:
     time.sleep(0.1)
     screen.update()
-    counter = 0
     c.create_car()
     c.move_cars()
 
-    while counter < 1:
-        if p.ycor() == 290:
-            s.change_level()
-            p.starting_position()
-        counter += 1
+    if p.ycor() == 290:
+        s.change_level()
+        p.starting_position()
+
+    for car in c.cars:
+        if car.distance(p) < 20:
+            game_is_on = False
