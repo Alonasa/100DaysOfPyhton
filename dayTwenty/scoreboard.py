@@ -9,8 +9,9 @@ class Score(Turtle):
         super().__init__()
         self.score = 0
         with open("score_table.txt", mode="r") as data:
-            if data.read():
-                self.high_score = int(data.read())
+            item = data.read()
+            if item:
+                self.high_score = int(item)
             else:
                 self.high_score = 0
         self.penup()
