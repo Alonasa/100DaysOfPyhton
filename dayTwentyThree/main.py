@@ -21,8 +21,9 @@ while game_is_on:
     c.create_car()
     c.move_cars()
 
-    if p.ycor() == 290:
+    if p.ycor() > 290:
         s.change_level()
+        c.increase_speed(1)
         p.starting_position()
 
     for car in c.cars:

@@ -40,14 +40,14 @@ while game_play:
 
     if (new_snake.head.xcor() > MAX_X or new_snake.head.xcor() < -MAX_X or
             new_snake.head.ycor() > MAX_Y or new_snake.head.ycor() < -MAX_Y):
-        score.game_over()
-        game_play = False
+        score.reset()
+        new_snake.reset()
 
     for part in new_snake.snake_body[1:]:
         if part == new_snake.head:
             pass
         elif new_snake.head.distance(part) < 2:
-            game_play = False
-            score.game_over()
+            score.reset()
+            new_snake.reset()
 
 screen.exitonclick()

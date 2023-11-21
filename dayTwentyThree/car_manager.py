@@ -13,6 +13,7 @@ class CarManager(Turtle):
         self.cars = []
         self.hideturtle()
         self.text = ""
+        self.car_speed = STARTING_MOVE_DISTANCE
 
     def create_car(self):
         generator = random.randint(1, 6)
@@ -28,10 +29,13 @@ class CarManager(Turtle):
 
     def move_cars(self):
         for car in self.cars:
-            car.backward(STARTING_MOVE_DISTANCE)
+            car.backward(self.car_speed)
 
     def game_over(self):
         self.text = "Game over"
-        self.color("red")
         self.write(f"{self.text}\n  😭😭😭", align="center", font=FONT)
         self.goto(0, 0)
+
+    def increase_speed(self, level):
+        if level:
+            self.car_speed += MOVE_INCREMENT
