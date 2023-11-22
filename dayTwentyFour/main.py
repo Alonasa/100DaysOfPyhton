@@ -8,12 +8,12 @@
 # Hint3: THis method will help you: https://www.w3schools.com/python/ref_string_strip.asp
 
 with open("./Input/Letters/starting_letter.txt") as text:
+    letter_content = text.read()
     with open("Input/Names/invited_names.txt") as names:
         for name in names:
             name = name.strip()
             with open(f"A:/100DAYSPYTHON/dayTwentyFour/Output/ReadyToSend/letter_for_{name.strip()}.txt",
                       "w") as to_send:
                 new_text = ''
-                for i in text:
-                    new_text += i.replace("[name],", name)
+                new_text += letter_content.replace("[name]", name)
                 to_send.write(f"{new_text}")
