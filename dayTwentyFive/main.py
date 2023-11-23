@@ -10,10 +10,7 @@ turtle.shape(image)
 FONT = ("Courier", 8, "bold")
 
 data = pandas.read_csv("50_states.csv")
-states = data["state"].tolist()
-x = data["x"].tolist()
-y = data["y"].tolist()
-print(states)
+states = data.state.to_list()
 
 counter = 0
 count_states = len(states)
@@ -27,8 +24,10 @@ while counter <= count_states:
         idx = states.index(answer)
         t = Turtle()
         t.penup()
-        t.goto(x[idx], y[idx])
         t.hideturtle()
+        st = data.y
+        location = data[data.state == answer]
+        t.goto(int(location.x), int(location.y))
         t.text = answer
         t.write(f"{t.text}", align="center", font=FONT)
 
