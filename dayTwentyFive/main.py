@@ -1,18 +1,35 @@
+from turtle import Turtle
+import turtle
 import pandas
 
-data = pandas.read_csv("squirrel_count.csv")
-colors = data["Primary Fur Color"].dropna().tolist()
+screen = turtle.Screen()
+screen.title("U.S. States Game")
+image = "blank_states_img.gif"
+screen.addshape(image)
+turtle.shape(image)
+FONT = ("Courier", 8, "bold")
 
-crazy_squirrels = {}
+data = pandas.read_csv("50_states.csv")
+states = data["state"].tolist()
+x = data["x"].tolist()
+y = data["y"].tolist()
+print(states)
 
-for color in colors:
-    if color != "nan":
-        if color in crazy_squirrels:
-            crazy_squirrels[color] += 1
-        else:
-            crazy_squirrels[color] = 0
+counter = 0
+count_states = len(states)
+correct = 0
+while counter <= count_states:
+    counter += 1
+    answer = screen.textinput(title=f"{correct}/{count_states} States Correct",
+                              prompt="What's another State name?").title()
+    if answer in states:
+        correct += 1
+        idx = states.index(answer)
+        t = Turtle()
+        t.penup()
+        t.goto(x[idx], y[idx])
+        t.hideturtle()
+        t.text = answer
+        t.write(f"{t.text}", align="center", font=FONT)
 
-df = pandas.DataFrame.from_dict(crazy_squirrels, orient='index', columns=['Count'])
-
-# Write the DataFrame to a CSV file
-df.to_csv('squirrels_count.csv', index_label='Color')
+screen.exitonclick()
