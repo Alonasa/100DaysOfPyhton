@@ -22,13 +22,11 @@ while counter <= count_states:
     answer = screen.textinput(title=f"{correct}/{count_states} States Correct",
                               prompt="What's another State name?").title()
     if answer == "Exit":
-        missing_states = []
-        for state in states:
-            if state not in guessed_states:
-                missing_states.append(state)
-                states_to_learn = pandas.DataFrame(missing_states)
-                states_to_learn.to_csv("states_to_learn.csv")
+        missing_states = [state for state in states if state not in guessed_states]
+        states_to_learn = pandas.DataFrame(missing_states)
+        states_to_learn.to_csv("states_to_learn.csv")
         break
+        
     if answer in states:
         guessed_states.append(answer)
         correct += 1
