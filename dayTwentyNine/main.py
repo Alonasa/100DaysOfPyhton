@@ -42,9 +42,16 @@ def save():
                                 "password": password_info
                             }
                         }
-                        with open("passwords.json", "r") as pass_data:
-                            data = json.load(pass_data)
+                        try:
+                            with open("passwords.json", "r") as pass_data:
+                                data = json.load(pass_data)
+
+                        except FileNotFoundError:
+                            with open("passwords.json", "w") as pass_data:
+                                json.dump(item, pass_data, indent=2)
+                        else:
                             data.update(item)
+
                         with open("passwords.json", "w") as pass_data:
                             json.dump(data, pass_data, indent=2)
 
