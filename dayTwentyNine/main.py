@@ -2,6 +2,8 @@
 from tkinter import Tk, Canvas, PhotoImage, Label, Entry, Button, messagebox
 import re
 
+from dayFive.password_generator import generate_password
+
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -46,6 +48,11 @@ def save():
                 messagebox.showinfo(message=f"Field {field.capitalize()} is too short")
 
 
+def password_gen():
+    secure_password = generate_password()
+    password_entry.insert(index=0, string=secure_password)
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.resizable(False, False)
@@ -72,7 +79,7 @@ email_entry.grid(row=2, column=1, columnspan=2)
 password_entry = Entry(width=34)
 password_entry.grid(row=3, column=1)
 
-password_button = Button(text="Generate password")
+password_button = Button(text="Generate password", command=password_gen)
 password_button.grid(row=3, column=2, padx=0, pady=0)
 add_button = Button(text="Add", width=44, command=save)
 add_button.grid(row=4, column=1, columnspan=2)
