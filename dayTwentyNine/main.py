@@ -51,6 +51,11 @@ def save():
 def password_gen():
     secure_password = generate_password()
     password_entry.insert(index=0, string=secure_password)
+    autoclip(password_entry)
+
+
+def autoclip(entry):
+    entry.clipboard_append(entry.get())
 
 
 # ---------------------------- UI SETUP ------------------------------- #
