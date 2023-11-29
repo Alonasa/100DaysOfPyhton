@@ -1,4 +1,5 @@
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+import tkinter
 from tkinter import Tk, Canvas, PhotoImage, Label, Entry, Button, messagebox
 import re
 
@@ -19,7 +20,7 @@ def validate_email(mail):
 
 
 def save():
-    website_info = website_entry.get()
+    website_info = website_entry.get().lower()
     email_info = email_entry.get()
     password_info = password_entry.get()
     is_positive = messagebox.askokcancel(title=website_info,
@@ -75,6 +76,23 @@ def autoclip(entry):
     entry.clipboard_append(entry.get())
 
 
+def get_password():
+    resource = website_entry.get()
+    try:
+        with open("passwords.json", "r") as pass_data:
+            data = json.load(pass_data)
+            item = data[resource.lower()]
+            print(item)
+            if item:
+                email_entry.delete(0, tkinter.END)
+                email_entry.insert(string=item["email"], index=0)
+                password_entry.delete(0, tkinter.END)
+                password_entry.insert(string=item["password"], index=0)
+
+    except KeyError:
+        messagebox.showinfo(title="Not Found", message=f"There's no data for {resource.capitalize()}")
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.resizable(False, False)
@@ -93,17 +111,19 @@ email.grid(row=2, column=0)
 password = Label(text="Password: ")
 password.grid(row=3, column=0)
 
-website_entry = Entry(width=52)
-website_entry.grid(row=1, column=1, columnspan=2)
+website_entry = Entry(width=32)
+website_entry.grid(row=1, column=1)
 website_entry.focus()
 email_entry = Entry(width=52)
 email_entry.grid(row=2, column=1, columnspan=2)
 email_entry.insert(string="alona@mail.com", index=0)
-password_entry = Entry(width=34)
+password_entry = Entry(width=32)
 password_entry.grid(row=3, column=1)
 
+search_button = Button(text="Search", width=14, command=get_password)
+search_button.grid(row=1, column=2, padx=5)
 password_button = Button(text="Generate password", command=password_gen)
-password_button.grid(row=3, column=2, padx=0, pady=0)
+password_button.grid(row=3, column=2, padx=5, pady=0)
 add_button = Button(text="Add", width=44, command=save)
 add_button.grid(row=4, column=1, columnspan=2)
 
