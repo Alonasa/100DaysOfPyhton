@@ -4,6 +4,7 @@ make simple password generator
 
 # Password Generator Project
 import random
+from tkinter import messagebox, simpledialog
 
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
            'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
@@ -13,16 +14,16 @@ symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
 
 
 def generate_password():
-    print("Welcome to the PyPassword Generator!")
-    nr_letters = int(input("How many letters would you like in your password?\n"))
-    nr_symbols = int(input(f"How many symbols would you like?\n"))
-    nr_numbers = int(input(f"How many numbers would you like?\n"))
+    # print("Welcome to the PyPassword Generator!")
+    nr_letters = simpledialog.askinteger(title="Letters", prompt="How many letters would you like in your password?\n")
+    nr_symbols = simpledialog.askinteger(title="Symbols", prompt="How many symbols would you like?\n")
+    nr_numbers = simpledialog.askinteger(title="Numbers", prompt="How many numbers would you like?\n")
 
     # Eazy Level - Order not randomised:
     # e.g. 4 letter, 2 symbol, 2 number = JduE&!91
     passp = ''
 
-    for letter in range(nr_letters):
+    for letter in range(int(nr_letters)):
         idx = random.randint(0, len(letters) - 1)
         passp += letters[idx]
 
@@ -34,9 +35,7 @@ def generate_password():
         idx = random.randint(0, len(numbers) - 1)
         passp += numbers[idx]
 
-    print(f"Your password is: {passp}")
-
     strong = ''.join(random.sample(passp, len(passp)))
+    messagebox.showinfo(message=f"Your secure password is: {strong}")
 
-    print(f"Your strong password is: {strong}")
     return strong
