@@ -1,6 +1,6 @@
-'''
+"""
 make simple password generator
-'''
+"""
 
 # Password Generator Project
 import random
@@ -21,21 +21,21 @@ def generate_password():
 
     # Eazy Level - Order not randomised:
     # e.g. 4 letter, 2 symbol, 2 number = JduE&!91
-    passp = ''
+    password = ''
 
     for letter in range(int(nr_letters)):
         idx = random.randint(0, len(letters) - 1)
-        passp += letters[idx]
+        password += letters[idx]
 
     for sym in range(nr_symbols):
         idx = random.randint(0, len(symbols) - 1)
-        passp += symbols[idx]
+        password += symbols[idx]
 
     for num in range(nr_numbers):
         idx = random.randint(0, len(numbers) - 1)
-        passp += numbers[idx]
+        password += numbers[idx]
 
-    strong = ''.join(random.sample(passp, len(passp)))
+    strong = ''.join(random.sample(password, len(password)))
     messagebox.showinfo(message=f"Your secure password is: {strong}")
 
     return strong
