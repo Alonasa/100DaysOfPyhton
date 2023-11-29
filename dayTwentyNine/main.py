@@ -91,6 +91,10 @@ def get_password():
 
     except KeyError:
         messagebox.showinfo(title="Not Found", message=f"There's no data for {resource.capitalize()}")
+    except FileNotFoundError:
+        messagebox.showinfo(title="Not Found", message="Theres no any passwords in database")
+    except json.JSONDecodeError:
+        messagebox.showinfo(title="Not Found", message="Database is empty")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
