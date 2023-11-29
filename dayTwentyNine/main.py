@@ -3,6 +3,7 @@ from tkinter import Tk, Canvas, PhotoImage, Label, Entry, Button, messagebox
 import re
 
 from dayFive.password_generator import generate_password
+import json
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
@@ -35,9 +36,18 @@ def save():
             if len(value) > 8:
                 if field == 'email':
                     if validate_email(value):
-                        with open("passwords.txt", "a") as pass_data:
-                            pass_data.write(
-                                f"website: {website_info} | email: {email_info} | password: {password_info}\n")
+                        item = {
+                            website_info: {
+                                "email": email_info,
+                                "password": password_info
+                            }
+                        }
+                        with open("passwords.json", "r") as pass_data:
+                            data = json.load(pass_data)
+                            data.update(item)
+                        with open("passwords.json", "w") as pass_data:
+                            json.dump(data, pass_data, indent=2)
+
                             website_entry.delete(0, 'end')
                             password_entry.delete(0, 'end')
                         messagebox.showinfo(title="Successful Operation", message="Data was saved")
@@ -81,6 +91,7 @@ website_entry.grid(row=1, column=1, columnspan=2)
 website_entry.focus()
 email_entry = Entry(width=52)
 email_entry.grid(row=2, column=1, columnspan=2)
+email_entry.insert(string="alona@mail.com", index=0)
 password_entry = Entry(width=34)
 password_entry.grid(row=3, column=1)
 
