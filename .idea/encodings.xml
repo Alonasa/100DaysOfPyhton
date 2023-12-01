@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayEight/caesar_cipher.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayEighteen/turtle_challenges.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayEleven/art.py" charset="UTF-8" />
@@ -14,9 +15,10 @@
     <file url="file://$PROJECT_DIR$/daySeven/hangman.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/daySeventeen/quiz.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayTen/calculator.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayThirtyOne/jd.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayTwelve/graphics.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayTwelve/guess_the_number.py" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/turtl.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayTwentyNine/passwords.json" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
