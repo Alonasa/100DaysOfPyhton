@@ -3,22 +3,28 @@ from tkinter import Canvas, Tk, Button, PhotoImage
 import pandas
 
 BACKGROUND_COLOR = "#B1DDC6"
-
-data = pandas.read_csv("data/french_words.csv")
-words = data.to_dict(orient="records")
-
+words = {}
 item = {}
+try:
+    data = pandas.read_csv("data/words_to_learn.csv")
+except FileNotFoundError:
+    original_data = pandas.read_csv("data/french_words.csv")
+    words = original_data.to_dict(orient="records")
+else:
+    words = data.to_dict(orient="records")
 
 
 def change_word():
-    global item
+    global item, timer
+    window.after_cancel(timer)
     item = random.choice(words)
     canvas.itemconfig(card_language, text="French")
     canvas.itemconfig(card_word, text=item["French"].capitalize())
     canvas.itemconfig(front, image=card_img)
     canvas.itemconfig(card_language, fill="black")
     canvas.itemconfig(card_word, fill="black")
-    window.after(3000, learn_word)
+    timer = window.after(3000, learn_word)
+    words.remove(item)
     return item
 
 
@@ -29,7 +35,8 @@ def learn_word():
     canvas.itemconfig(front, image=card_back_img)
     canvas.itemconfig(card_language, fill="white")
     canvas.itemconfig(card_word, fill="white")
-    window.after(3000, change_word)
+    words_to_learn = pandas.DataFrame(words)
+    words_to_learn.to_csv("data/words_to_learn.csv", index=False)
 
 
 # ----------------------- UI------------------------------------------
@@ -53,6 +60,8 @@ button_right = Button(image=right_img, background=BACKGROUND_COLOR, highlightthi
 button_right.grid(row=3, column=1)
 button_left = Button(image=left_img, background=BACKGROUND_COLOR, highlightthickness=0, bd=0, command=learn_word)
 button_left.grid(row=3, column=2)
+
+timer = window.after(3000, learn_word)
 
 change_word()
 window.mainloop()
