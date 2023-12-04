@@ -2,6 +2,8 @@ import os
 import random
 import smtplib
 import datetime as dt
+from email.mime.text import MIMEText
+
 import pandas
 
 my_email = "all.junk.mails.my@gmail.com"
@@ -28,3 +30,13 @@ for el in birthday:
             new_text = letter
             for old_entry, new_entry in zip(old_entries, new_entries):
                 new_text = new_text.replace(old_entry, new_entry)
+
+            msg = MIMEText(new_text)
+            msg['Subject'] = 'Birthday Greeting'
+            msg['From'] = my_email
+            msg['To'] = el['email']
+
+            with smtplib.SMTP("smtp.gmail.com") as connection:
+                connection.starttls()
+                connection.login(user=my_email, password=password)
+                connection.send_message(msg)
