@@ -5,10 +5,13 @@ import requests
 def get_quote():
     response = requests.get("https://api.kanye.rest/")
     quote = response.json()["quote"]
-    if len(quote) < 90:
-        canvas.itemconfig(quote_text, text=quote)
+    if response.status_code == 200:
+        if len(quote) < 90:
+            canvas.itemconfig(quote_text, text=quote)
+        else:
+            return get_quote()
     else:
-        return get_quote()
+        canvas.itemconfig(quote_text, text="Sorry, I am tired((")
 
 
 window = Tk()
