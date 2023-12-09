@@ -3,6 +3,13 @@ from quiz_brain import QuizBrain
 
 THEME_COLOR = "#375362"
 FONT = ("Arial", 20, "italic")
+Categories = {
+    "25": "Art",
+    "18": "Computers",
+    "21": "Sports"
+}
+
+OPTIONS = ["25", "18", "21"]
 
 
 class QuizInterface:
@@ -12,10 +19,9 @@ class QuizInterface:
         self.window = Tk()
         self.window.title("Quizer")
         self.window.config(width=350, height=450, padx=20, pady=20, background=THEME_COLOR)
-
         self.score = Label(text=f"Score: 0", font=FONT, fg="white",
                            background=THEME_COLOR)
-        self.score.grid(row=0, column=1)
+        self.score.grid(row=0, column=2)
 
         self.canvas = Canvas(width=300, height=250, background="white")
         self.question = self.canvas.create_text(150, 125, width=280, text="Text", font=FONT)
@@ -29,7 +35,6 @@ class QuizInterface:
         self.button_no.grid(row=2, column=1)
 
         self.get_next_question()
-
         self.window.mainloop()
 
     def get_next_question(self):
