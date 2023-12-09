@@ -21,7 +21,7 @@ for item in data:
     day = item["dt_txt"].split(" ")
     weather = item["weather"][0]["description"].capitalize()
     if str(day[0]) == str(date_today):
-        if "rain" in weather:
+        if item["weather"][0]["id"] < 700:
             datetime_obj = datetime.strptime(day[1], "%H:%M:%S")
 
             # Add 3 hours to the datetime object
