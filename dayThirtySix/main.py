@@ -1,9 +1,21 @@
+import requests
+
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
 
 STOCK_ENDPOINT = "https://www.alphavantage.co/query"
 NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 API_KEY = "7YMLK7K2SSOFF20T"
+
+parameters = {
+    "function": "TIME_SERIES_INTRADAY",
+    "symbol": "IBM",
+    "interval": "1min",
+    "apikey": API_KEY
+}
+
+data = requests.get(url=STOCK_ENDPOINT, params=parameters)
+print(data.json())
 
 ## STEP 1: Use https://newsapi.org/docs/endpoints/everything
 # When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
