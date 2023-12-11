@@ -11,7 +11,6 @@ password = "jjbw dcrj tzun uydj"
 email = "all.junk.mails.my@gmail.com"
 
 birthday = pandas.read_csv("birthdays.csv").to_dict(orient="records")
-
 folder_path = "letter_templates"  # Replace with the actual folder path
 
 # Get a list of all files in the folder
