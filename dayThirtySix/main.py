@@ -1,13 +1,14 @@
+import smtplib
+
 import requests
 
-STOCK = "TSLA"
+STOCK_ACTIVE = "TSLA"
 COMPANY_NAME = "Tesla Inc"
 
 STOCK_ENDPOINT = "https://www.alphavantage.co/query"
 NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 API_KEY = "7YMLK7K2SSOFF20T"
 NEWS_API_KEY = "f5d2e398a5c64dfba2db6a92db9a3f88"
-STOCK_ACTIVE = "IBM"
 
 investment_parameters = {
     "function": "TIME_SERIES_DAILY",
@@ -28,7 +29,6 @@ yesterday_price = float(data_list[0]['4. close'])
 day_before_price = float(data_list[1]['4. close'])
 
 price_difference = yesterday_price - day_before_price
-get_five_percent = yesterday_price / 100 * 5
 
 ## STEP 1: Use https://newsapi.org/docs/endpoints/everything
 # When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
@@ -39,16 +39,30 @@ get_five_percent = yesterday_price / 100 * 5
 ## STEP 2: Use https://newsapi.org/docs/endpoints/everything
 # Instead of printing ("Get News"), actually fetch the first 3 articles for the COMPANY_NAME. 
 # HINT 1: Think about using the Python Slice Operator
+difference = abs(price_difference)
 
-if abs(price_difference) > get_five_percent:
+if difference != 0:
     get_news = requests.get(url=NEWS_ENDPOINT, params=news_parameters)
     news_data = get_news.json()['articles']
     for i in range(10):
         news_article = news_data[i]
-        print(news_article['title'])
-        print(news_article['description'])
-        print(news_article['publishedAt'])
-        print(f"Learn {news_article['url']}")
+        article_title = news_article['title']
+        article_description = news_article['description']
+        article_date = news_article['publishedAt'].split('T')
+        article_read = f"Learn {news_article['url']}"
+
+        password = "jjbw dcrj tzun uydj"
+        email = "all.junk.mails.my@gmail.com"
+
+        with smtplib.SMTP("smtp.gmail.com") as connection:
+            difference_direction = f'🔺{difference:.2f}' if price_difference > 0 else f'🔻{difference:.2f}'
+            connection.starttls()
+            subject = f"{STOCK_ACTIVE} {difference_direction}"
+            message = (f"Subject: {subject}\n\n{article_title}\n{article_description}\n"
+                       f"\nPosted {article_date[0]} at {article_date[1]}\n{article_read}")
+            connection.login(user=email, password=password)
+            connection.sendmail(from_addr=email, to_addrs=email,
+                                msg=message.encode('utf-8'))
 
 ## STEP 3: Use twilio.com/docs/sms/quickstart/python
 # Send a separate message with each article's title and description to your phone number. 
