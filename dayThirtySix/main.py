@@ -39,9 +39,9 @@ price_difference = yesterday_price - day_before_price
 ## STEP 2: Use https://newsapi.org/docs/endpoints/everything
 # Instead of printing ("Get News"), actually fetch the first 3 articles for the COMPANY_NAME. 
 # HINT 1: Think about using the Python Slice Operator
-difference = abs(price_difference)
+difference = abs(price_difference) / yesterday_price * 100
 
-if difference != 0:
+if difference > 5:
     get_news = requests.get(url=NEWS_ENDPOINT, params=news_parameters)
     news_data = get_news.json()['articles']
     for i in range(10):
