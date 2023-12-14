@@ -1,11 +1,28 @@
 import requests
 
+USERNAME = "alona"
+TOKEN = "alonecoder25"
+
 pixela_endpoint = "https://pixe.la/v1/users"
+graph_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs"
+
 params = {
-    "token": "alonecoder25",
-    "username": "alona",
+    "token": TOKEN,
+    "username": USERNAME,
     "agreeTermsOfService": "yes",
     "notMinor": "yes",
 }
+graph_params = {
+    "id": "graph",
+    "name": "Coding Graph",
+    "unit": "Tasks",
+    "type": "float",
+    "color": "kuro"
+}
 
-response = requests.post(url=pixela_endpoint, json=params)
+headers = {
+    "X-USER-TOKEN": TOKEN
+}
+
+response = requests.post(url=graph_endpoint, json=graph_params, headers=headers)
+print(response.text)
