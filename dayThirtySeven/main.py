@@ -42,6 +42,11 @@ create_response = requests.post(url=pixel_creation_endpoint, json=pixel_data, he
 pixel_update = {
     "quantity": "5"
 }
+
 update_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs/{GRAPH_ID}/{today.strftime('%Y%m%d')}"
 update_response = requests.put(url=update_endpoint, json=pixel_update, headers=headers)
 print(update_response.text)
+
+delete_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs/{GRAPH_ID}/{today.strftime('%Y%m%d')}"
+delete_response = requests.delete(url=update_endpoint, headers=headers)
+print(delete_response.text)
