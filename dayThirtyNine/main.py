@@ -52,8 +52,7 @@ if get_data.status_code < 300:
             lowest_price = item["lowestPrice"]
             departure = response[0]['route'][0]['utc_departure'].split('T')
             arrival = response[0]['route'][1]['utc_departure'].split('T')
-
-            if lowest_price > response[0]['price']:
+            if lowest_price != response[0]['price']:
                 itemId = item["id"]
                 body = {
                     "price": {"lowestPrice": lowest_price}

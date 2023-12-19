@@ -34,7 +34,7 @@ pixel_creation_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs/{GRAPH_ID}"
 today = datetime.now()
 pixel_data = {
     "date": today.strftime("%Y%m%d"),
-    "quantity": "5",
+    "quantity": print("How many tasks did you do today?: "),
 }
 
 create_response = requests.post(url=pixel_creation_endpoint, json=pixel_data, headers=headers)
@@ -48,5 +48,5 @@ update_response = requests.put(url=update_endpoint, json=pixel_update, headers=h
 print(update_response.text)
 
 delete_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs/{GRAPH_ID}/{today.strftime('%Y%m%d')}"
-delete_response = requests.delete(url=update_endpoint, headers=headers)
-print(delete_response.text)
+# delete_response = requests.delete(url=update_endpoint, headers=headers)
+# print(delete_response.text)
