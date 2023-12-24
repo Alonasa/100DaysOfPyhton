@@ -1,7 +1,11 @@
+import requests
 from bs4 import BeautifulSoup
 import lxml
 
-with open("website.html") as file:
-    content = file.read()
+response = requests.get("https://dev.to/t/news")
+page = response.text
 
-soup = BeautifulSoup(content, "lxml")
+content = BeautifulSoup(page, "html.parser")
+element = content.find(name="div", class_="crayons-story__indention")
+print(element)
+# soup = BeautifulSoup(content, "lxml")
