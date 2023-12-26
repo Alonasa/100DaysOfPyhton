@@ -11,6 +11,7 @@
     <file url="file://$PROJECT_DIR$/dayFourteen/art.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayFourteen/game_data.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayFourteen/higher_lower.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dayFourtyFive/topMovies/movies_to_watch.txt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayNine/secret_auction.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/daySeven/hangman.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/daySeventeen/quiz.py" charset="UTF-8" />
@@ -22,6 +23,6 @@
     <file url="file://$PROJECT_DIR$/dayTwelve/graphics.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayTwelve/guess_the_number.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dayTwentyNine/passwords.json" charset="UTF-8" />
-    <file url="PROJECT" charset="UTF-8" />
+    <file url="PROJECT" charset="windows-1251" />
   </component>
 </project>
