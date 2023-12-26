@@ -14,9 +14,8 @@ titles = content.find_all(name="h2", class_="crayons-story__title")
 hashtags = content.find_all(name="a", class_="crayons-tag")
 for hashtag in hashtags:
     text = hashtag.getText()
-    print(text)
 
 for el in posting_dates:
-    print(el['datetime'])
+    posted = el['datetime']
 # print(element)
 # soup = BeautifulSoup(content, "lxml")
