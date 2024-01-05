@@ -4,8 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 from requests import request
 
-client_id = "af95b8b6e51245d3bbde7942c54d3ffd"
-client_secret = "c9b1660a8386475cbda88586a4c5998e"
+CLIENT_ID = "af95b8b6e51245d3bbde7942c54d3ffd"
+CLIENT_SECRET = "c9b1660a8386475cbda88586a4c5998e"
 
 base_url = "https://www.billboard.com/charts/hot-100"
 
