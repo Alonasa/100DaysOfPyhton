@@ -16,16 +16,16 @@ events = {}
 for i, val in enumerate(full_data):
     title = val.find_element(By.CLASS_NAME, "event-title").text
     date = val.find_element(By.TAG_NAME, "time")
-    short_date = val.text
+    short_date = date.text
     full_date = date.get_attribute("datetime")
     location = val.find_element(By.CLASS_NAME, "event-location")
 
     events[i] = {
         'title': title,
-        'date': date,
+        'date': date.text,
         'short date': short_date,
         'full date': full_date,
-        'location': location,
+        'location': location.text,
     }
 
 print(str(events).encode('utf-8'))
