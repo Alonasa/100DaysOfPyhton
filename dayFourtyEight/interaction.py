@@ -8,6 +8,6 @@ chrome_options.add_experimental_option("detach", True)
 
 driver = webdriver.Chrome(options=chrome_options)
 driver.get(LINK)
-data = driver.find_elements(By.ID, "articlecount")
-text = data[0].text.split(" ")
-print(text[0])
+data = driver.find_elements(By.CSS_SELECTOR, "#articlecount a")
+text = data[0].text
+print(text)
