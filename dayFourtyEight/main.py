@@ -2,9 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 PRODUCT_LINK = "https://www.python.org/events/"
-PASSWORD = "jjbw dcrj tzun uydj"
-EMAIL = "all.junk.mails.my@gmail.com"
-ALERT_PRICE = 100
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("detach", True)
