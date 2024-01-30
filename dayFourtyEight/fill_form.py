@@ -13,9 +13,12 @@ driver.get(LINK)
 
 name = driver.find_element(By.NAME, "fName")
 name.send_keys("Alona", Keys.TAB)
+
 surename = driver.find_element(By.NAME, "lName")
 surename.send_keys("Sk", Keys.TAB)
+
 mail = driver.find_element(By.NAME, "email")
 mail.send_keys(EMAIL)
+
 submit = driver.find_element(By.XPATH, "/html/body/form/button")
 submit.click()
