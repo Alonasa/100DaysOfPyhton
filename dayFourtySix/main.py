@@ -3,7 +3,6 @@ from datetime import datetime
 import requests
 import spotipy
 from bs4 import BeautifulSoup
-from requests import request
 from spotipy import SpotifyClientCredentials
 
 CLIENT_ID = "af95b8b6e51245d3bbde7942c54d3ffd"
