@@ -7,4 +7,6 @@ WEBSITE_LINK = "https://appbrewery.github.io/Zillow-Clone/"
 data = requests.get(url=WEBSITE_LINK).text
 elements = BeautifulSoup(data, "html.parser")
 
-ADVERTISING_LINKS = elements.find_all(attrs={"class": "StyledPropertyCardPhotoBody"})
+ADVERTISINGS = elements.find_all(attrs={"class": "StyledPropertyCardPhotoBody"})
+LINKS = [item.a["href"] for item in ADVERTISINGS]
+print(LINKS)
