@@ -11,5 +11,7 @@ ADVERTISINGS = elements.find_all(attrs={"class": "ListItem-c11n-8-84-3-StyledLis
 LINKS = [item.a["href"] for item in ADVERTISINGS]
 PRICES = [el.text.replace("+", "/").split("/")[0] for el in
           elements.find_all("span", {"data-test": "property-card-price"})]
+ADDRESSES = [[el.text.strip()] for el in elements.find_all("address")]
 print(PRICES)
 print(LINKS)
+print(ADDRESSES)
