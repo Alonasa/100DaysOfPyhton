@@ -5,10 +5,17 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
     <title>Alona's Skrypnyk Portfolio</title>
 </head>
 <body>
 <h1>My Portfolio Projects</h1>
-
+<section class="about-me">
+    <h3>Technologies which I'm using</h3>
+    <img class="profile" src="{{url_for('static',filename='main_photo.jpg')}}" width="250" height="250">
+    <p class="profile__description">Hello my name Alona and I am a professional web
+        developer!!!</p>
+    <p>Have certificates in HTML&CSS, JS, Python</p>
+</section>
 </body>
 </html>

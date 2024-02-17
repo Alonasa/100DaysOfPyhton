@@ -1,0 +1,13 @@
+body {
+    background: #ffffff;
+    text-align: center;
+}
+
+.profile {
+    border-radius: 50%;
+}
+
+.about-me {
+    font-family: "Lucida Console", "Courier New", monospace;
+    color: green;
+}
