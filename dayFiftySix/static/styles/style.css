@@ -1,5 +1,5 @@
 body {
-    background: #ffffff;
+    background-color: #ffffff;
     text-align: center;
 }
 
@@ -10,5 +10,5 @@ body {
 .about-me {
     font-family: "Lucida Console", "Courier New", monospace;
     color: green;
-    font-weight: bold;
+
 }
