@@ -32,17 +32,21 @@
 <section class="job-reservation-form">
     <h3>Offer a job</h3>
     <form id="contact-form" action="#" method="post">
-        <label for="contact-form__name" class="visually-hidden">Your name</label>
-        <input type="text" name="contact-form__name" id="contact-form__name" placeholder="Your name">
-        <label for="contact-form__email" class="visually-hidden">E-mail</label>
-        <input type="email" name="contact-form__email" id="contact-form__email" placeholder="E-mail">
+        <div>
+            <label for="contact-form__name">Your name:</label>
+            <input type="text" name="contact-form__name" id="contact-form__name" placeholder="Your name">
+        </div>
+        <div>
+            <label for="contact-form__email">E-mail:</label>
+            <input type="email" name="contact-form__email" id="contact-form__email" placeholder="E-mail">
+        </div>
         <div>
             <label for="contact-form__message">Your message</label>
             <textarea name="contact-form__message" id="contact-form__message"
                       placeholder="Leave your message here">
             </textarea>
         </div>
-        <button type="submit">Send request</button>
+        <button class="button" type="submit">Send request</button>
     </form>
 </section>
 </body>
