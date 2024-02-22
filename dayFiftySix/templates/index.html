@@ -18,7 +18,9 @@
             <p class="about-me__description">I'm a professional web
                 developer!!!</p>
             <p>Have certificates in HTML&CSS, JS, Python</p>
-            <button class="button button__green" onclick="location.href='https://t.me/ameha3'">Offer a job</button>
+            <button class="button button__green about-me__offer">Offer a
+                job
+            </button>
         </section>
     </div>
 </header>
@@ -29,25 +31,43 @@
     <div class="container"></div>
 </footer>
 
-<section class="job-reservation-form">
-    <h3>Offer a job</h3>
-    <form id="contact-form" action="#" method="post">
-        <div class="contact-form__name">
-            <label for="contact-form__name">Your name:</label>
-            <input type="text" name="contact-form__name" id="contact-form__name" placeholder="Your name">
-        </div>
-        <div class="contact-form__email">
-            <label for="contact-form__email">E-mail:</label>
-            <input type="email" name="contact-form__email" id="contact-form__email" placeholder="E-mail">
-        </div>
-        <div class="contact-form__message">
-            <label for="contact-form__message">Your message</label>
-            <textarea name="contact-form__message" id="contact-form__message"
-                      placeholder="Leave your message here">
+<section class="job-reservation">
+    <div class="job-reservation-form">
+        <h3>Offer a job</h3>
+        <form id="contact-form" action="#" method="post">
+            <div class="contact-form__name">
+                <label for="contact-form__name">Your name:</label>
+                <input type="text" name="contact-form__name" id="contact-form__name" placeholder="Your name">
+            </div>
+            <div class="contact-form__email">
+                <label for="contact-form__email">E-mail:</label>
+                <input type="email" name="contact-form__email" id="contact-form__email" placeholder="E-mail">
+            </div>
+            <div class="contact-form__message">
+                <label for="contact-form__message">Your message</label>
+                <textarea name="contact-form__message" id="contact-form__message"
+                          placeholder="Leave your message here">
             </textarea>
-        </div>
-        <button class="button button__green" type="submit">Send request</button>
-    </form>
+            </div>
+            <button class="button button__green" type="submit">Send request</button>
+        </form>
+    </div>
 </section>
+<script>
+    let getButton = document.getElementsByClassName("about-me__offer")[0];
+    let getForm = document.getElementsByClassName("job-reservation")[0];
+    let formVisibilityStatus = getForm.style.display;
+
+
+    const showForm = () => {
+       if (formVisibilityStatus == 'block') {
+            getForm.style.display = 'none'
+       } else {
+            getForm.style.display = 'block'
+       }
+    }
+
+    getButton.addEventListener('click', showForm);
+</script>
 </body>
 </html>
