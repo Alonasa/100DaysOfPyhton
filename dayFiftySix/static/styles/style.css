@@ -74,10 +74,21 @@ h3 {
 .job-reservation-form {
     padding: 20px;
     margin: 20px;
+    position: relative;
     border-radius: 20px;
     background-color: #ffffff;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     text-align: center;
+}
+
+.job-reservation-form__close {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    color: green;
+    cursor: pointer;
+    top: 20px;
+    right: 20px;
 }
 
 .job-reservation-form form {

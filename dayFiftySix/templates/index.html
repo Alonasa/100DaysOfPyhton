@@ -33,6 +33,7 @@
 
 <section class="job-reservation">
     <div class="job-reservation-form">
+        <span class="job-reservation-form__close">x</span>
         <h3>Offer a job</h3>
         <form id="contact-form" action="#" method="post">
             <div class="contact-form__name">
@@ -54,20 +55,21 @@
     </div>
 </section>
 <script>
-    let getButton = document.getElementsByClassName("about-me__offer")[0];
-    let getForm = document.getElementsByClassName("job-reservation")[0];
-    let formVisibilityStatus = getForm.style.display;
-
+    const getButton = document.getElementsByClassName("about-me__offer")[0];
+    const getForm = document.getElementsByClassName("job-reservation")[0];
+    const closeForm = document.getElementsByClassName("job-reservation-form__close")[0];
 
     const showForm = () => {
-       if (formVisibilityStatus == 'block') {
-            getForm.style.display = 'none'
-       } else {
+        const formVisibilityStatus = getForm.style.display;
+        if (formVisibilityStatus == 'block') {
+                getForm.style.display = 'none'
+        } else {
             getForm.style.display = 'block'
+          }
        }
-    }
 
     getButton.addEventListener('click', showForm);
+    closeForm.addEventListener('click', showForm);
 </script>
 </body>
 </html>
