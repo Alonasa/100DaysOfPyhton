@@ -45,6 +45,27 @@ h3 {
     border-radius: 50%;
 }
 
+.about-me__socials {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.about-me__socials li {
+    width: 25px;
+    height: 25px;
+    padding: 0 10px;
+    list-style: none;
+}
+
+.about-me__socials--link svg {
+    fill: grey;
+}
+
+.about-me__socials--link:hover svg {
+    fill: green;
+}
+
 .button__green {
     color: white;
     background-color: green;
