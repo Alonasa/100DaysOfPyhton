@@ -17,6 +17,7 @@ body {
     border-style: solid;
     background-color: transparent;
     text-transform: uppercase;
+    cursor: pointer;
 }
 
 h3 {

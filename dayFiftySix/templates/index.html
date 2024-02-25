@@ -70,6 +70,11 @@
 
     getButton.addEventListener('click', showForm);
     closeForm.addEventListener('click', showForm);
+    document.addEventListener('click', (evt) => {
+      if (!getForm.contains(evt.target) && evt.target !== getButton) {
+        getForm.style.display = 'none';
+      }
+    });
 </script>
 </body>
 </html>
