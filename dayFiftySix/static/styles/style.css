@@ -41,9 +41,13 @@ h3 {
 }
 
 .about-me {
+    padding: 20px;
     width: 320px;
     margin: 0 auto;
     font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.about-me h3 {
     color: green;
 }
 
