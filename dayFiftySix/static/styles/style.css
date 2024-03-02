@@ -12,6 +12,12 @@ a {
     cursor: pointer;
 }
 
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
 .container {
     width: 90%;
     margin: 0 auto;
@@ -30,6 +36,10 @@ h3 {
     font-size: 1.1em;
 }
 
+section {
+    margin: 30px 0;
+}
+
 .visually-hidden {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
@@ -41,13 +51,11 @@ h3 {
 }
 
 .about-me {
-    padding: 20px;
-    width: 320px;
-    margin: 0 auto;
+    margin: 20px auto;
     font-family: "Lucida Console", "Courier New", monospace;
 }
 
-.about-me h3 {
+.about-me h3, section h3 {
     color: green;
 }
 
@@ -57,6 +65,7 @@ h3 {
 
 .about-me__socials {
     padding: 0;
+    margin: 25px;
     display: flex;
     justify-content: center;
 }
@@ -87,6 +96,10 @@ h3 {
     background-color: green;
     border-color: green;
     opacity: 0.7;
+}
+
+.about-me__button: {
+    margin: 20px;
 }
 
 .about-me__button:hover {
@@ -159,6 +172,17 @@ input {
     border: 2px solid green;
     box-sizing: border-box;
     overflow: hidden;
+}
+
+.certificates__badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.certificates__badge img {
+    width: 300px;
+    height: 300px;
 }
 
 .portfolio__projects {
