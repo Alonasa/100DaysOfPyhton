@@ -8,7 +8,12 @@
     <title>Test templating</title>
 </head>
 <body>
-<h1>Hello here</h1>
+<h3>Hello {{name if name else "User"}},</h3>
+<p>I think you are {{gender}},</p>
+<p>And you might be {{age}}</p>
+<footer>
+    <h4>Copyright {{year}} Built by Alona</h4>
+</footer>
 
 </body>
 </html>
