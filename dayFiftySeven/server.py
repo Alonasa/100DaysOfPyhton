@@ -16,8 +16,8 @@ def main():
 def show_data(username):
     get_data = requests.get(f"https://api.agify.io?name={username}").json()
     gender_data = requests.get(f"https://api.genderize.io?name={username}").json()
-    age = get_data.get("age")
-    gender = gender_data.get("gender")
+    age = get_data["age"]
+    gender = gender_data["gender"]
     return render_template("index.html", name=username, age=age, gender=gender, year=year)
 
 
