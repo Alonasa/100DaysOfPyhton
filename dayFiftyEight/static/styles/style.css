@@ -40,3 +40,14 @@
 #pricing {
   font-size: 16px;
 }
+
+
+.feature-image {
+    margin: 0;
+    width: 116px;
+    height: 42px;
+    background-color: lightgray;
+    text-align: center;
+    border-radius: 10px;
+    margin-top: 5px;
+}
