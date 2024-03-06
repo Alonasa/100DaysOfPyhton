@@ -6,10 +6,6 @@ body  {
   color: #212121;
 }
 
-a {
-  text-decoration: none;
-}
-
 .wrapper  {
   position: relative;
   clear: both;

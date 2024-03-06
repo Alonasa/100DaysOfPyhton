@@ -22,7 +22,7 @@ def show_data(username):
     return render_template("user.html", name=username, age=age, gender=gender, year=year)
 
 
-@app.route("/blog/<int:post_id>")
+@app.route("/post/<int:post_id>")
 def show_post(post_id):
     post = None
     for p in posts:
