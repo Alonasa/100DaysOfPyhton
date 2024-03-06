@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test templating</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+<div class="wrapper">
+    <div class="top">
+        <div class="title"><a href="/"><h1>My Blog</h1></a></div>
+    </div>
+    <div class="content">
+        <div class="card">
+            <h3>Hello {{name.capitalize() if name else "User"}},</h3>
+            <p>I think you are {{gender if gender else "Anonym gender"}},</p>
+            <p>And you might be {{age if age else "Unknown"}} years old</p>
+        </div>
+    </div>
+</div>
+</body>
+<footer>
+    <p>Made with ♥️ in {{year}}.</p>
+</footer>
+</html>
