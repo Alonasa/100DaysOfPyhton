@@ -1,19 +1,10 @@
 from datetime import datetime
 
-from flask import Flask, render_template, request
+import requests
+from flask import Flask, render_template
 
 app = Flask(__name__)
 year = datetime.now().year
-
-
-def get_name():
-    if request.method == "POST":
-        name = request.form.get('name')
-        return name
-
-
-def get_click():
-    return 'Get click on button'
 
 
 @app.route("/")
@@ -23,7 +14,11 @@ def main():
 
 @app.route("/<username>")
 def show_data(username):
-    return render_template("index.html", name=username, year=year)
+    get_data = requests.get(f"https://api.agify.io?name={username}").json()
+    gender_data = requests.get(f"https://api.genderize.io?name={username}").json()
+    age = get_data.get("age")
+    gender = gender_data.get("gender")
+    return render_template("index.html", name=username, age=age, gender=gender, year=year)
 
 
 if __name__ == "__main__":

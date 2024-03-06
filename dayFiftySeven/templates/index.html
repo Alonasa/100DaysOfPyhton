@@ -9,8 +9,8 @@
 </head>
 <body>
 <h3>Hello {{name if name else "User"}},</h3>
-<p>I think you are {{gender}},</p>
-<p>And you might be {{age}}</p>
+<p>I think you are {{gender if gender else "Anonym"}} gender,</p>
+<p>And you might be {{age if age else "Unknown"}} years old</p>
 <footer>
     <h4>Copyright {{year}} Built by Alona</h4>
 </footer>
