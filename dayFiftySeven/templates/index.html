@@ -11,6 +11,7 @@
 <h3>Hello {{name.capitalize() if name else "User"}},</h3>
 <p>I think you are {{gender if gender else "Anonym gender"}},</p>
 <p>And you might be {{age if age else "Unknown"}} years old</p>
+<a href="{{url_for('show_posts')}}">Read blog</a>
 <footer>
     <h4>Copyright {{year}} Built by Alona</h4>
 </footer>

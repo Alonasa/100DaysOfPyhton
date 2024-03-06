@@ -21,5 +21,12 @@ def show_data(username):
     return render_template("index.html", name=username, age=age, gender=gender, year=year)
 
 
+@app.route("/blog/")
+def show_posts():
+    posts = requests.get("https://api.npoint.io/08afc6f266b78ea0dd46").json()
+
+    return render_template("blog.html", posts=posts)
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=3000)
