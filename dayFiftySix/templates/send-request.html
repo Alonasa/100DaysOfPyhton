@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Send job request</title>
+    <link rel="stylesheet" href="static/styles/style.css">
+
+</head>
+<body>
+<section class="job-reservation">
+    <div class="job-reservation-form">
+        <a href="/" class="job-reservation-form__close">x</a>
+        <h3>Offer a job</h3>
+        <form id="contact-form" action="/send-form" method="post" enctype="multipart/form-data">
+            <div class="contact-form__name">
+                <label for="contact-form__name">Your name:</label>
+                <input type="text" name="contact-form__name" id="contact-form__name"
+                       placeholder="Your name">
+            </div>
+            <div class="contact-form__email">
+                <label for="contact-form__email">E-mail:</label>
+                <input type="email" name="contact-form__email" id="contact-form__email"
+                       placeholder="E-mail">
+            </div>
+            <div class="contact-form__message">
+                <label for="contact-form__message">Your message</label>
+                <textarea name="contact-form__message" id="contact-form__message"
+                          placeholder="Leave your message here"></textarea>
+            </div>
+            <button class="button button__green" type="submit">Send request</button>
+        </form>
+    </div>
+</section>
+
+</body>
+</html>

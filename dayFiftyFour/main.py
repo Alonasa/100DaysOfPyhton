@@ -25,7 +25,6 @@ def person_function(func):
 @person_function
 def bot():
     message = 'I am a bot'
-    print(message)
     return message
 
 
