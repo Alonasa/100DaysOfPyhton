@@ -1,4 +1,5 @@
 import smtplib
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -9,6 +10,7 @@ app = Flask(__name__)
 my_email = "all.junk.mails.my@gmail.com"
 password = "jjbw dcrj tzun uydj"
 email = "all.junk.mails.my@gmail.com"
+year = datetime.now().year
 
 
 @app.route("/")
@@ -27,7 +29,7 @@ def send_form():
         name = request.form["contact-form__name"].strip()
         mail = request.form["contact-form__email"].strip()
         message = request.form["contact-form__message"].strip()
-        message_content = f"You just received new request from {mail} message - {message}"
+        message_content = f"You just received new request from {mail}\n\n Message: {message}"
 
         msg = MIMEMultipart()
         msg["From"] = mail
@@ -45,7 +47,12 @@ def send_form():
             connection.login(user=my_email, password=password)
             connection.send_message(msg)
 
-        return '<h1>Successfully sent your message</h1>'
+        return render_template('thank-you.html',
+                               title="Successfully sent your message",
+                               link="/",
+                               link_text="Go to main page",
+                               year=year,
+                               domain="https://github.com/Alonasa/aportfolio")
 
 
 if __name__ == "__main__":

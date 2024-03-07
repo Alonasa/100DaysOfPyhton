@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="style.css"/>
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+    {% endblock %}
+    <link rel="stylesheet" href="static/styles/thank-you.css">
+
+</head>
+<body>
+<div id="content">{% block content %}<h1>{{title}}</h1><a href="{{link}}">{{link_text}}</a>{% endblock %}</div>
+<div id="footer">
+    {% block footer %}
+    &copy; Copyright {{year}} by <a href="{{domain}}">Alona</a>.
+    {% endblock %}
+</div>
+</body>
+</html>

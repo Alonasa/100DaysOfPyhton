@@ -1,0 +1,16 @@
+body {
+  width: 90%;
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: green;
+}
+
+#footer {
+  margin: 0 auto;
+  margin-top: auto;
+}
