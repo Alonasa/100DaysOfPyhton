@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length
@@ -21,6 +21,9 @@ This will install the packages from requirements.txt for this project.
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+VALID_EMAIL = "admin@email.com"
+VALID_PASSWORD = "12345678"
+
 
 @app.route("/")
 def home():
@@ -29,7 +32,7 @@ def home():
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     submit = SubmitField(label="Log In")
 
 
@@ -37,10 +40,15 @@ class LoginForm(FlaskForm):
 def login():
     form = LoginForm()
     validation = form.validate_on_submit()
-    if validation:
-        return redirect('/success')
-    # if form.errors:
-    #     return redirect('/denied')
+    if request.method == "POST" and validation:
+        email = request.form["email"].strip()
+        password = request.form["password"].strip()
+        is_admin = email == VALID_EMAIL and password == VALID_PASSWORD
+
+        if is_admin:
+            return redirect('/success')
+        else:
+            return redirect('/denied')
     return render_template('login.html', form=form)
 
 
