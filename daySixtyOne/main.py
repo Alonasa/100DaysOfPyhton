@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, render_template, redirect
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length
 
 '''
@@ -30,15 +30,17 @@ def home():
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    submit = SubmitField(label="Log In")
 
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
+    validation = form.validate_on_submit()
+    if validation:
         return redirect('/success')
-    if form.errors:
-        return redirect('/denied')
+    # if form.errors:
+    #     return redirect('/denied')
     return render_template('login.html', form=form)
 
 
