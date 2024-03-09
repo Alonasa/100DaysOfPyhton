@@ -7,7 +7,7 @@
 <body>
 <div class="container">
     <h1>Login</h1>
-    <form method="POST" action="/">
+    <form method="POST" action="{{ url_for('login') }}">
         <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
         {{ form.email.label }} {{ form.email(size=30) }}
         {{ form.password.label }} {{ form.password(size=30) }}
