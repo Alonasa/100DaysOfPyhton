@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, render_template, redirect, request
+from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length
@@ -23,6 +24,8 @@ app.secret_key = os.urandom(24)
 
 VALID_EMAIL = "admin@email.com"
 VALID_PASSWORD = "12345678"
+
+bootstrap = Bootstrap5(app)
 
 
 @app.route("/")
