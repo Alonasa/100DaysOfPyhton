@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, SelectField, URLField, TimeField
 from wtforms.validators import DataRequired
 import csv
 
@@ -23,14 +23,34 @@ app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
 
+def generate_smiles(smile):
+    smiles = []
+    for item in range(5):
+        smiles.append(smile * (item + 1))
+    smiles.append('✘')
+    return smiles
+
+
+cups = generate_smiles('☕')
+biceps = generate_smiles('💪')
+power = generate_smiles('🔌')
+
+
 class CafeForm(FlaskForm):
     cafe = StringField('Cafe name', validators=[DataRequired()])
+    location = URLField('Cafe location on Google Maps URL', validators=[DataRequired()])
+    opening = TimeField('Opening Time e.g 7AM', validators=[DataRequired()], format='%H:%M')
+    closing = TimeField('Closing Time e.g 7PM', validators=[DataRequired()], format='%H:%M')
+    rating = SelectField('Coffee Rating', choices=cups, validate_choice=True)
+    wifi = SelectField('WiFi Strength Rating', choices=biceps, validate_choice=True)
+    power = SelectField('Power Socket Availability', choices=power, validate_choice=True)
     submit = SubmitField('Submit')
+
 
 # Exercise:
 # add: Location URL, open time, closing time, coffee rating, wifi rating, power outlet rating fields
 # make coffee/wifi/power a select element with choice of 0 to 5.
-#e.g. You could use emojis ☕️/💪/✘/🔌
+# e.g. You could use emojis ☕️/💪/✘/🔌
 # make all fields required except submit
 # use a validator to check that the URL field has a URL entered.
 # ---------------------------------------------------------------------------
