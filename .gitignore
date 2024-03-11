@@ -2,3 +2,4 @@
 .idea
 myenv/
 venv/
+.git\hooks\pre-commit

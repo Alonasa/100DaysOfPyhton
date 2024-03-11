@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, URLField, TimeField
@@ -21,6 +21,10 @@ This will install the packages from requirements.txt for this project.
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
+CSV_FILE = 'cafe-data.csv'
+CUP = '☕'
+BICEPS = '💪'
+SOCKET = '🔌'
 
 
 def generate_smiles(smile):
@@ -31,9 +35,9 @@ def generate_smiles(smile):
     return smiles
 
 
-cups = generate_smiles('☕')
-biceps = generate_smiles('💪')
-power = generate_smiles('🔌')
+cups = generate_smiles(CUP)
+biceps = generate_smiles(BICEPS)
+power = generate_smiles(SOCKET)
 
 
 class CafeForm(FlaskForm):
@@ -57,17 +61,31 @@ class CafeForm(FlaskForm):
 
 
 # all Flask routes below
-@app.route("/")
+@app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template('index.html')
 
 
-@app.route('/add')
+@app.route('/add', methods=['GET', 'POST'])
 def add_cafe():
     form = CafeForm()
-    if form.validate_on_submit():
-        print("True")
-    # Exercise:
+    validation = form.validate_on_submit()
+    if request.method == 'POST' and validation:
+        with open(CSV_FILE, 'a', newline='', encoding='utf-8') as csv_file:
+            name = request.form['cafe'].strip()
+            location = request.form['location'].strip()
+            opening = request.form['opening']
+            closing = request.form['closing']
+            rating = request.form['rating']
+            wifi = request.form['wifi']
+            power = request.form['power']
+            data_row = [name, location, opening, closing, rating, wifi, power]
+
+            writer = csv.writer(csv_file)
+            writer.writerow(data_row)
+
+            # Exercise:
+
     # Make the form write a new row into cafe-data.csv
     # with   if form.validate_on_submit()
     return render_template('add.html', form=form)
@@ -75,7 +93,7 @@ def add_cafe():
 
 @app.route('/cafes')
 def cafes():
-    with open('cafe-data.csv', newline='', encoding='utf-8') as csv_file:
+    with open(CSV_FILE, newline='', encoding='utf-8') as csv_file:
         csv_data = csv.reader(csv_file, delimiter=',')
         list_of_rows = []
         for row in csv_data:
