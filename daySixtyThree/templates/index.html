@@ -4,9 +4,13 @@
 {% block content %}
 <div class="container mt-4">
     <h1>My Library</h1>
-    <ul class="list-unstyled">
-        <li></li>
+    {% if book %}
+    <ul>
+        <li>{{book.title}} - {{book.author}} - {{book.rating}}/10</li>
     </ul>
+    {% else %}
+    <p>The list of your books is empty</p>
+    {% endif %}
     <a class="btn btn-primary" href="{{url_for('add')}}">Add New Book</a>
 </div>
 {% endblock %}

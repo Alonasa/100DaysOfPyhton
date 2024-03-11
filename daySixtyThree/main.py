@@ -2,11 +2,11 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
-from wtforms import StringField, DecimalRangeField, IntegerRangeField, SubmitField, IntegerField
+from wtforms import StringField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, NumberRange
 
 app = Flask(__name__)
-app.secret_key = os.urandom(64)
+app.config["SECRET_KEY"] = os.urandom(64)
 Bootstrap5(app)
 
 all_books = []
@@ -25,6 +25,9 @@ class AddBookForm(FlaskForm):
 # min=0, max=10, step=1,
 @app.route('/')
 def home():
+    if len(all_books) > 0:
+        for book in all_books:
+            return render_template('index.html', book=book)
     return render_template('index.html')
 
 
@@ -33,7 +36,15 @@ def add():
     form = AddBookForm()
     validation = form.validate_on_submit()
     if request.method == 'POST':
-        print('Form Added')
+        if validation:
+            book = {
+                'title':  f"{request.form['book'].strip().capitalize()}",
+                'author': f"{request.form['author'].strip().capitalize()}",
+                'rating': f"{request.form['rating']}"
+            }
+            all_books.append(book)
+
+            return redirect(url_for('home'))
     return render_template('add.html', form=form)
 
 
