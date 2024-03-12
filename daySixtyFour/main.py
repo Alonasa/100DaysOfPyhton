@@ -8,30 +8,16 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests
 
-'''
-Red underlines? Install the required packages first: 
-Open the Terminal in PyCharm (bottom left). 
-
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from requirements.txt for this project.
-'''
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
 
-# CREATE DB
 class Base(DeclarativeBase):
     pass
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'squlite:///movies.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -42,7 +28,7 @@ class Movie(db.Model):
     year = db.Column(Integer, nullable=False)
     description = db.Column(String(250), nullable=False)
     rating = db.Column(Float, nullable=False)
-    ranking = db.Column(String(250), nullable=False)
+    ranking = db.Column(Integer, nullable=False)
     review = db.Column(String(250), nullable=False)
     img_url = db.Column(String(250), nullable=False)
 
@@ -63,9 +49,11 @@ new_movie = Movie(
 )
 
 
-@app.route("/")
+@app.route('/')
 def home():
-    return render_template("index.html")
+    result = db.session.execute(db.select(Movie))
+    all_movies = result.scalars().all()
+    return render_template('index.html', movies=all_movies)
 
 
 if __name__ == '__main__':
