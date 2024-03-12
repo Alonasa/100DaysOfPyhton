@@ -5,8 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from sqlalchemy import Integer, String, Float, func
 from sqlalchemy.orm import DeclarativeBase
-from wtforms import StringField, SubmitField, FloatField, validators
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import StringField, SubmitField, IntegerField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(64)
@@ -38,8 +38,7 @@ class AddBookForm(FlaskForm):
         "placeholder": "Book name e.g. Harry Potter"})
     author = StringField('Book Author', validators=[DataRequired()], render_kw={
         "placeholder": "Author name e.g. J. K. Rowling"})
-    rating = FloatField('Rating', validators=[DataRequired(), validators.NumberRange(min=0.0, max=10.0)], render_kw={
-        "placeholder": "Add your rating from 1.0 to 10.0"})
+    rating = IntegerField('Rating', render_kw={"value": 1.0, "min": 1.0, "max": 10.0, "step": 0.1})
     submit = SubmitField('Add book')
 
 
