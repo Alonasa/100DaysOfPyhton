@@ -1,12 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Integer, String, Float
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, FloatField, URLField
+from wtforms import StringField, SubmitField, IntegerField, URLField
 from wtforms.validators import DataRequired
-import requests
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -63,6 +62,13 @@ class AddMovieForm(FlaskForm):
     submit = SubmitField('Add Movie')
 
 
+class EditMovieForm(FlaskForm):
+    rating = IntegerField('Your Rating out of 10 e.g. 5.2', validators=[DataRequired()],
+                          render_kw={'placeholder': 'New rating', 'value': 1.0, 'min': 1.0, 'max': 10.0, 'step': 0.1})
+    review = StringField('Your Review', validators=[DataRequired()], render_kw={'placeholder': 'Your review'})
+    submit = SubmitField('Change')
+
+
 @app.route('/')
 def home():
     result = db.session.execute(db.select(Movie))
@@ -89,9 +95,19 @@ def add():
     return render_template('add.html', form=form)
 
 
-@app.route('/update')
+@app.route('/update', methods=['GET', 'POST'])
 def update():
-    pass
+    form = EditMovieForm()
+    movie_id = request.args.get('id')
+    movie = db.get_or_404(Movie, movie_id)
+    validation = form.validate_on_submit()
+    if request.method == 'POST' and validation:
+        movie.rating = request.form["rating"]
+        movie.review = request.form["review"].strip()
+        db.session.commit()
+        return redirect(url_for('home'))
+
+    return render_template("edit.html", movie=movie, form=form)
 
 
 @app.route('/delete')
