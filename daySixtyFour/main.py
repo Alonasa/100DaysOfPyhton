@@ -26,10 +26,10 @@ class Movie(db.Model):
     id = db.Column(Integer, primary_key=True)
     title = db.Column(String(250), unique=True, nullable=False)
     year = db.Column(Integer, nullable=False)
-    description = db.Column(String(250), nullable=False)
+    description = db.Column(String(500), nullable=False)
     rating = db.Column(Float, nullable=False)
     ranking = db.Column(Integer, nullable=False)
-    review = db.Column(String(250), nullable=False)
+    review = db.Column(String(500), nullable=False)
     img_url = db.Column(String(250), nullable=False)
 
 
@@ -62,8 +62,14 @@ class EditMovieForm(FlaskForm):
 
 @app.route('/')
 def home():
-    result = db.session.execute(db.select(Movie))
+    result = db.session.execute(db.select(Movie).order_by(Movie.rating.desc()))
     all_movies = result.scalars().all()
+
+    length = len(all_movies)
+    for i in range(length):
+        all_movies[i].ranking = i + 1
+    db.session.commit()
+
     return render_template('index.html', movies=all_movies)
 
 
