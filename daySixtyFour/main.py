@@ -66,6 +66,7 @@ class EditMovieForm(FlaskForm):
     rating = IntegerField('Your Rating out of 10 e.g. 5.2', validators=[DataRequired()],
                           render_kw={'placeholder': 'New rating', 'value': 1.0, 'min': 1.0, 'max': 10.0, 'step': 0.1})
     review = StringField('Your Review', validators=[DataRequired()], render_kw={'placeholder': 'Your review'})
+    img_url = URLField('Img URL', validators=[DataRequired()], render_kw={'placeholder': 'Add valid url for image'})
     submit = SubmitField('Change')
 
 
@@ -102,8 +103,9 @@ def update():
     movie = db.get_or_404(Movie, movie_id)
     validation = form.validate_on_submit()
     if request.method == 'POST' and validation:
-        movie.rating = request.form["rating"]
-        movie.review = request.form["review"].strip()
+        movie.rating = float(request.form['rating'])
+        movie.review = request.form['review'].strip()
+        movie.img_url = request.form['img_url'].strip()
         db.session.commit()
         return redirect(url_for('home'))
 
