@@ -1,11 +1,12 @@
+from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Integer, String, Float
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, URLField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, IntegerField, URLField, FloatField
+from wtforms.validators import DataRequired, NumberRange
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -35,26 +36,15 @@ class Movie(db.Model):
 with app.app_context():
     db.create_all()
 
-# CREATE TABLE
-
-new_movie = Movie(
-    title='Phone Booth',
-    year=2002,
-    description="Publicist Stuart Shepard finds himself trapped in a phone booth, pinned down by an extortionist's sniper rifle. Unable to leave or receive outside help, Stuart's negotiation with the caller leads to a jaw-dropping climax.",
-    rating=7.3,
-    ranking=10,
-    review='My favourite character was the caller.',
-    img_url='https://image.tmdb.org/t/p/w500/tjrX2oWRCM3Tvarz38zlZM7Uc10.jpg'
-)
-
 
 class AddMovieForm(FlaskForm):
     title = StringField('Movie Title', validators=[DataRequired()], render_kw={'placeholder': 'Movie title'})
-    year = IntegerField('Year', validators=[DataRequired()], render_kw={'placeholder': 'Year of production'})
-    description = StringField('Movie Description', validators=[DataRequired()], render_kw={'placeholder': 'Movie '
-                                                                                                          'description'})
-    rating = IntegerField('Movie Rating', validators=[DataRequired()],
-                          render_kw={'placeholder': 'Movie rating', 'value': 1.0, 'min': 1.0, 'max': 10.0, 'step': 0.1})
+    year = IntegerField('Year', validators=[DataRequired(), NumberRange(min=1900, max=datetime.now().year)], render_kw={
+        'placeholder': 'Year of production'})
+    description = StringField('Movie Description', validators=[DataRequired()],
+                              render_kw={'placeholder': 'Movie description'})
+    rating = FloatField('Movie Rating', validators=[DataRequired(), NumberRange(min=1.0, max=10.0)],
+                        render_kw={'placeholder': 'Movie rating', 'value': 1.0})
     ranking = IntegerField('Rank Of The Movie', validators=[DataRequired()], render_kw={'placeholder': 'Rank of '
                                                                                                        'movie'})
     review = StringField('Your Review', validators=[DataRequired()], render_kw={'placeholder': 'Your review'})
@@ -63,8 +53,8 @@ class AddMovieForm(FlaskForm):
 
 
 class EditMovieForm(FlaskForm):
-    rating = IntegerField('Your Rating out of 10 e.g. 5.2', validators=[DataRequired()],
-                          render_kw={'placeholder': 'New rating', 'value': 1.0, 'min': 1.0, 'max': 10.0, 'step': 0.1})
+    rating = FloatField('Your Rating out of 10 e.g. 5.2', validators=[NumberRange(min=1.0, max=10.0)],
+                        render_kw={'placeholder': 'New rating', 'value': 1.0, 'min': 1.0, 'max': 10.0, 'step': 0.1})
     review = StringField('Your Review', validators=[DataRequired()], render_kw={'placeholder': 'Your review'})
     img_url = URLField('Img URL', validators=[DataRequired()], render_kw={'placeholder': 'Add valid url for image'})
     submit = SubmitField('Change')
@@ -81,11 +71,11 @@ def home():
 def add():
     form = AddMovieForm()
     validation = form.validate_on_submit()
-    if request.method == 'POST' and validation:
+    if validation:
         movie = Movie(title=request.form['title'].strip().capitalize(),
                       year=request.form['year'].strip(),
                       description=request.form['description'].strip(),
-                      rating=request.form['rating'].strip(),
+                      rating=request.form['rating'],
                       ranking=request.form['ranking'].strip(),
                       review=request.form['review'].strip(),
                       img_url=request.form['img_url'].strip())
@@ -102,8 +92,9 @@ def update():
     movie_id = request.args.get('id')
     movie = db.get_or_404(Movie, movie_id)
     validation = form.validate_on_submit()
+
     if request.method == 'POST' and validation:
-        movie.rating = float(request.form['rating'])
+        movie.rating = form.rating.data
         movie.review = request.form['review'].strip()
         movie.img_url = request.form['img_url'].strip()
         db.session.commit()
@@ -114,7 +105,11 @@ def update():
 
 @app.route('/delete')
 def delete():
-    pass
+    movie_id = request.args.get('id')
+    movie = db.get_or_404(Movie, movie_id)
+    db.session.delete(movie)
+    db.session.commit()
+    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
