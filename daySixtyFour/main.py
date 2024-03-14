@@ -4,6 +4,7 @@ import requests
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Integer, String, Float
 from flask_wtf import FlaskForm
@@ -16,7 +17,10 @@ base_url = 'https://api.themoviedb.org/3/'
 api_key = '352ac6a4ded4ca0c8fc24094e857dd60'
 headers = {
     "accept":        "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTJhYzZhNGRlZDRjYTBjOGZjMjQwOTRlODU3ZGQ2MCIsInN1YiI6IjY1ZjIwNjQ0ZDY0YWMyMDE0YjVkOWJlNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.M-ZTqF8IPDstAChrGIfXJZDseUFCCDMCZNgj5Wd1p-k"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9."
+                     "eyJhdWQiOiIzNTJhYzZhNGRlZDRjYTBjOGZjMjQwOTRlODU3ZGQ2MCIsInN1YiI6Ij"
+                     "Y1ZjIwNjQ0ZDY0YWMyMDE0YjVkOWJlNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2Z"
+                     "XJzaW9uIjoxfQ.M-ZTqF8IPDstAChrGIfXJZDseUFCCDMCZNgj5Wd1p-k"
 }
 
 Bootstrap5(app)
@@ -33,7 +37,8 @@ db.init_app(app)
 
 class Movie(db.Model):
     id = db.Column(Integer, primary_key=True)
-    title = db.Column(String(250), unique=True, nullable=False)
+    source_id = db.Column(Integer, unique=True)
+    title = db.Column(String(250), nullable=False)
     year = db.Column(Integer, nullable=False)
     description = db.Column(String(2000), nullable=False)
     rating = db.Column(Float, nullable=False)
@@ -96,32 +101,40 @@ def get_movies(title):
 @app.route('/find')
 def find():
     movie_id = request.args.get('id')
-    movie_url = f'{base_url}/movie/{movie_id}'
-    pic_url = f'{movie_url}/images'
+    movie_url = f'{base_url}movie/{movie_id}'
+    pic_url = 'https://image.tmdb.org/t/p/w500'
 
     movie = requests.get(movie_url, headers=headers).json()
-    poster = requests.get(pic_url, headers=headers).json()
+    release_year = int(movie["release_date"].split('-')[0])
 
-    movie = Movie(title=movie['original_title'],
-                  year=movie["release_date"].split('-')[0],
-                  description=movie['overview'],
-                  rating=0,
-                  ranking=1,
-                  review='',
-                  img_url=poster)
-    db.session.add(movie)
-    db.session.commit()
-    return redirect(url_for('update'))
+    try:
+        movie = Movie(title=movie['original_title'],
+                      source_id=movie_id,
+                      year=release_year,
+                      description=movie['overview'],
+                      rating=1.0,
+                      review='review',
+                      ranking=1,
+                      img_url=f"{pic_url}{movie['poster_path']}")
+        db.session.add(movie)
+        db.session.commit()
+    except IntegrityError:
+        return redirect(url_for('add', title="You can't add the same movie twice"))
+
+    return redirect(url_for('update', id=movie.id))
 
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     form = FindMovieForm()
     validation = form.validate_on_submit()
+    title = request.args.get('title')
     if validation:
         movies_raw = get_movies(form.title.data).json()
         movies = movies_raw['results']
         return render_template('select.html', movies=movies)
+    if title:
+        return render_template('select.html', title=title)
 
     return render_template('add.html', form=form)
 
@@ -136,7 +149,6 @@ def update():
     if request.method == 'POST' and validation:
         movie.rating = form.rating.data
         movie.review = request.form['review'].strip()
-        movie.img_url = request.form['img_url'].strip()
         db.session.commit()
         return redirect(url_for('home'))
 
