@@ -4,19 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Boolean
 
-'''
-Install the required packages first: 
-Open the Terminal in PyCharm (bottom left). 
-
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from requirements.txt for this project.
-'''
-
 app = Flask(__name__)
 
 
@@ -45,6 +32,9 @@ class Cafe(db.Model):
     can_take_calls: Mapped[bool] = mapped_column(Boolean, nullable=False)
     coffee_price: Mapped[str] = mapped_column(String(250), nullable=True)
 
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
 
 with app.app_context():
     db.create_all()
@@ -66,17 +56,8 @@ def home():
 def random_cafe():
     cafes = get_cafes_from_db()
     cafe = random.choice(cafes)
-    jsonified_cafe = jsonify(cafe={"id":             cafe.id,
-                                   "name":           cafe.name,
-                                   "map_url":        cafe.map_url,
-                                   "img_url":        cafe.img_url,
-                                   "location":       cafe.location,
-                                   "seats":          cafe.seats,
-                                   "has_toilet":     cafe.has_toilet,
-                                   "has_wifi":       cafe.has_wifi,
-                                   "has_sockets":    cafe.has_sockets,
-                                   "can_take_calls": cafe.can_take_calls,
-                                   "coffee_price":   cafe.coffee_price})
+    cafe = cafe.to_dict()
+    jsonified_cafe = jsonify(cafe=cafe)
     return jsonified_cafe
 
 
@@ -85,20 +66,22 @@ def all_cafes():
     cafes = get_cafes_from_db()
     cafes_obj = {"cafes": []}
     for cafe in cafes:
-        nested = {"id":             cafe.id,
-                  "name":           cafe.name,
-                  "map_url":        cafe.map_url,
-                  "img_url":        cafe.img_url,
-                  "location":       cafe.location,
-                  "seats":          cafe.seats,
-                  "has_toilet":     cafe.has_toilet,
-                  "has_wifi":       cafe.has_wifi,
-                  "has_sockets":    cafe.has_sockets,
-                  "can_take_calls": cafe.can_take_calls,
-                  "coffee_price":   cafe.coffee_price}
-
+        nested = cafe.to_dict()
         cafes_obj["cafes"].append(nested)
     return jsonify(cafes_obj)
+
+
+@app.route("/search/")
+def find_cafe():
+    query_loc = request.args.get("loc")
+    result = db.session.execute(db.select(Cafe).where(Cafe.location == query_loc))
+    get_cafes = result.scalars().all()
+
+    if get_cafes:
+        cafes_json = [cafe.to_dict() for cafe in get_cafes]
+        return jsonify(cafes_json)
+    else:
+        return jsonify(error={"Not found": "Sorry, we don't have a cafe at that location."}), 404
 
     # HTTP POST - Create Record
 
