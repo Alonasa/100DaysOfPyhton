@@ -61,17 +61,18 @@ def random_cafe():
     get_cafes = db.session.execute(db.select(Cafe))
     all_cafes = get_cafes.scalars().all()
     cafe = random.choice(all_cafes)
-    return jsonify(id=cafe.id,
-                   name=cafe.name,
-                   map_url=cafe.map_url,
-                   img_url=cafe.img_url,
-                   location=cafe.location,
-                   seats=cafe.seats,
-                   has_toilet=cafe.has_toilet,
-                   has_wifi=cafe.has_wifi,
-                   has_sockets=cafe.has_sockets,
-                   can_take_calls=cafe.can_take_calls,
-                   coffee_price=cafe.coffee_price)
+    jsonified_cafe = jsonify(cafe={"id":             cafe.id,
+                                   "name":           cafe.name,
+                                   "map_url":        cafe.map_url,
+                                   "img_url":        cafe.img_url,
+                                   "location":       cafe.location,
+                                   "seats":          cafe.seats,
+                                   "has_toilet":     cafe.has_toilet,
+                                   "has_wifi":       cafe.has_wifi,
+                                   "has_sockets":    cafe.has_sockets,
+                                   "can_take_calls": cafe.can_take_calls,
+                                   "coffee_price":   cafe.coffee_price})
+    return jsonified_cafe
 
 
 # HTTP POST - Create Record
