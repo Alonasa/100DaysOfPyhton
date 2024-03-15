@@ -1,5 +1,5 @@
 import random
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Boolean
@@ -50,6 +50,12 @@ with app.app_context():
     db.create_all()
 
 
+def get_cafes_from_db():
+    get_cafes = db.session.execute(db.select(Cafe))
+    cafes = get_cafes.scalars().all()
+    return cafes
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -58,9 +64,8 @@ def home():
 # HTTP GET - Read Record
 @app.route("/random")
 def random_cafe():
-    get_cafes = db.session.execute(db.select(Cafe))
-    all_cafes = get_cafes.scalars().all()
-    cafe = random.choice(all_cafes)
+    cafes = get_cafes_from_db()
+    cafe = random.choice(cafes)
     jsonified_cafe = jsonify(cafe={"id":             cafe.id,
                                    "name":           cafe.name,
                                    "map_url":        cafe.map_url,
@@ -75,11 +80,31 @@ def random_cafe():
     return jsonified_cafe
 
 
-# HTTP POST - Create Record
+@app.route("/all")
+def all_cafes():
+    cafes = get_cafes_from_db()
+    cafes_obj = {"cafes": []}
+    for cafe in cafes:
+        nested = {"id":             cafe.id,
+                  "name":           cafe.name,
+                  "map_url":        cafe.map_url,
+                  "img_url":        cafe.img_url,
+                  "location":       cafe.location,
+                  "seats":          cafe.seats,
+                  "has_toilet":     cafe.has_toilet,
+                  "has_wifi":       cafe.has_wifi,
+                  "has_sockets":    cafe.has_sockets,
+                  "can_take_calls": cafe.can_take_calls,
+                  "coffee_price":   cafe.coffee_price}
 
-# HTTP PUT/PATCH - Update Record
+        cafes_obj["cafes"].append(nested)
+    return jsonify(cafes_obj)
 
-# HTTP DELETE - Delete Record
+    # HTTP POST - Create Record
+
+    # HTTP PUT/PATCH - Update Record
+
+    # HTTP DELETE - Delete Record
 
 
 if __name__ == '__main__':
