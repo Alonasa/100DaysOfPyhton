@@ -1,3 +1,4 @@
+import random
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -18,9 +19,12 @@ This will install the packages from requirements.txt for this project.
 
 app = Flask(__name__)
 
+
 # CREATE DB
 class Base(DeclarativeBase):
     pass
+
+
 # Connect to Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
 db = SQLAlchemy(model_class=Base)
@@ -52,6 +56,23 @@ def home():
 
 
 # HTTP GET - Read Record
+@app.route("/random")
+def random_cafe():
+    get_cafes = db.session.execute(db.select(Cafe))
+    all_cafes = get_cafes.scalars().all()
+    cafe = random.choice(all_cafes)
+    return jsonify(id=cafe.id,
+                   name=cafe.name,
+                   map_url=cafe.map_url,
+                   img_url=cafe.img_url,
+                   location=cafe.location,
+                   seats=cafe.seats,
+                   has_toilet=cafe.has_toilet,
+                   has_wifi=cafe.has_wifi,
+                   has_sockets=cafe.has_sockets,
+                   can_take_calls=cafe.can_take_calls,
+                   coffee_price=cafe.coffee_price)
+
 
 # HTTP POST - Create Record
 
