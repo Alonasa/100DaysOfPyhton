@@ -1,11 +1,13 @@
 import os
 import random
+
 from flask import Flask, jsonify, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Boolean
+from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from wtforms import StringField, BooleanField, URLField, SubmitField
 from wtforms.validators import DataRequired, Length
 
@@ -132,12 +134,26 @@ def add():
         db.session.add(cafe)
         db.session.commit()
 
-        return redirect(url_for('home'))
+        success_response = jsonify(response={"success": "Successfully added the new cafe."})
+        return success_response
 
     return render_template("add.html", form=form)
 
 
 # HTTP PUT/PATCH - Update Record
+
+@app.route("/update-price/<int:cafe_id>", methods=["PATCH"])
+def update(cafe_id):
+    cafe = db.get_or_404(Cafe, cafe_id)
+    new_price = request.args.get("price")
+
+    if cafe:
+        cafe.coffee_price = new_price
+        db.session.commit()
+        return jsonify(response={"success": "Successfully updated the price."})
+    else:
+        return jsonify(error={"Not Found": "Sorry a cafe with that id was not found in the database."})
+
 
 # HTTP DELETE - Delete Record
 

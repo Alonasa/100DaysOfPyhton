@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Cafe&Wifi API</title>
-</head>
-<body>
-    <h1>Welcome to the Cafe & Wifi API</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Cafe&Wifi API{% endblock %}
+{% block content %}
+<h1>Welcome to the Cafe & Wi-Fi API</h1>
+{% if message %}
+{{message}}
+{% endif %}
+{% endblock %}
