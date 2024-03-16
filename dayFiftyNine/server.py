@@ -7,6 +7,7 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, Text, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from flask import Markup
 
 app = Flask(__name__)
 posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
@@ -97,7 +98,8 @@ def build_contact():
 @app.route("/posts/post/<int:post_id>")
 def build_post(post_id):
     posts = posts_list()
-    return render_template("post.html", posts=posts, id=post_id)
+    translator = Markup
+    return render_template("post.html", posts=posts, id=post_id, translator=translator)
 
 
 if __name__ == "__main__":
