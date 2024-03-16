@@ -1,13 +1,13 @@
 import os
 import random
 
-from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask import Flask, jsonify, render_template, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from sqlalchemy import Integer, String, Boolean
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from werkzeug.exceptions import NotFound
 from wtforms import StringField, BooleanField, URLField, SubmitField
 from wtforms.validators import DataRequired, Length
 
@@ -156,6 +156,23 @@ def update(cafe_id):
 
 
 # HTTP DELETE - Delete Record
+
+
+@app.route("/report-closed/<int:cafe_id>")
+def close(cafe_id):
+    top_secret_api = "my_secret_key"
+    secret_key = request.args.get("api-key")
+
+    try:
+        cafe = db.get_or_404(Cafe, cafe_id)
+        if top_secret_api == secret_key:
+            db.session.delete(cafe)
+            db.session.commit()
+            return jsonify({"success": "Cafe closed successfully."})
+        else:
+            return jsonify({"error": "Sorry, that's not allowed. Make sure that you have the correct API-Key!"})
+    except NotFound:
+        return jsonify({"error": f"Cafe with ID not found in the database."})
 
 
 if __name__ == "__main__":
