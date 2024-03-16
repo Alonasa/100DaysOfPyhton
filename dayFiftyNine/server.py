@@ -1,17 +1,24 @@
+import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import requests
 from flask import Flask, render_template, request
+from markupsafe import Markup
+from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
 from sqlalchemy import Integer, Text, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from flask import Markup
+from wtforms import StringField, URLField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
 all_posts = requests.get(posts_api).json()
+app.config['SECRET_KEY'] = os.urandom(32)
+Bootstrap5(app)
 
 my_email = "all.junk.mails.my@gmail.com"
 password = "jjbw dcrj tzun uydj"
@@ -45,6 +52,14 @@ def posts_list():
     get_posts = db.session.execute(db.select(BlogPost))
     posts = get_posts.scalars().all()
     return posts
+
+
+class AddPostForm(FlaskForm):
+    title = StringField("Blog Post Title", validators=[DataRequired()])
+    subtitle = StringField("Subtitle", validators=[DataRequired()])
+    name = StringField("Your Name", validators=[DataRequired()])
+    img = URLField("Blog Image URL", validators=[DataRequired()])
+    submit = SubmitField("Submit Post")
 
 
 @app.route("/")
@@ -100,6 +115,21 @@ def build_post(post_id):
     posts = posts_list()
     translator = Markup
     return render_template("post.html", posts=posts, id=post_id, translator=translator)
+
+
+@app.route("/new-post")
+def create_post():
+    form = AddPostForm()
+    return render_template("add.html", form=form)
+
+
+@app.route("/edit")
+def edit_post():
+    posts = posts_list()
+    post_id = request.args.get("id")
+    for post in posts:
+        if post.id == post_id:
+            return "I have that item"
 
 
 if __name__ == "__main__":
