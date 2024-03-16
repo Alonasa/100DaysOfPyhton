@@ -4,6 +4,9 @@ from email.mime.text import MIMEText
 
 import requests
 from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Integer, Text, String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 app = Flask(__name__)
 posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
@@ -14,9 +17,39 @@ password = "jjbw dcrj tzun uydj"
 email = "all.junk.mails.my@gmail.com"
 
 
+class Base(DeclarativeBase):
+    pass
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///posts.db"
+db = SQLAlchemy(model_class=Base)
+db.init_app(app)
+
+
+class BlogPost(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
+    date: Mapped[str] = mapped_column(String(250), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    author: Mapped[str] = mapped_column(String(250), nullable=False)
+    img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+
+
+with app.app_context():
+    db.create_all()
+
+
+def posts_list():
+    get_posts = db.session.execute(db.select(BlogPost))
+    posts = get_posts.scalars().all()
+    return posts
+
+
 @app.route("/")
 def build_main():
-    return render_template("index.html", posts=all_posts)
+    posts = posts_list()
+    return render_template("index.html", posts=posts)
 
 
 @app.route("/about")
@@ -63,7 +96,8 @@ def build_contact():
 
 @app.route("/posts/post/<int:post_id>")
 def build_post(post_id):
-    return render_template("post.html", posts=all_posts, id=post_id)
+    posts = posts_list()
+    return render_template("post.html", posts=posts, id=post_id)
 
 
 if __name__ == "__main__":
