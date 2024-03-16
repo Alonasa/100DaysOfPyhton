@@ -137,7 +137,7 @@ def add():
         success_response = jsonify(response={"success": "Successfully added the new cafe."})
         return success_response
 
-    return render_template("add.html", form=form)
+    return jsonify(resource={"error": "Adding Cafe not successfule"})
 
 
 # HTTP PUT/PATCH - Update Record
