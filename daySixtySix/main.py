@@ -1,10 +1,17 @@
+import os
 import random
-from flask import Flask, jsonify, render_template, request, Response
+from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Boolean
+from wtforms import StringField, BooleanField, URLField, SubmitField
+from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(32)
+Bootstrap5(app)
 
 
 # CREATE DB
@@ -13,7 +20,7 @@ class Base(DeclarativeBase):
 
 
 # Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///cafes.db"
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -44,6 +51,26 @@ def get_cafes_from_db():
     get_cafes = db.session.execute(db.select(Cafe))
     cafes = get_cafes.scalars().all()
     return cafes
+
+
+class AddCafeForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired(), Length(min=2, max=250)],
+                       render_kw={"placeholder": "Caffe name"})
+    map_url = URLField("Map Url", validators=[DataRequired(), Length(min=2, max=500)],
+                       render_kw={"placeholder": "Google maps URL"})
+    img_url = URLField("Img Url", validators=[DataRequired(), Length(min=2, max=500)],
+                       render_kw={"placeholder": "Photo Url"})
+    location = StringField("Location", validators=[DataRequired(), Length(min=2, max=250)],
+                           render_kw={"placeholder": "Location"})
+    seats = StringField("Seats", validators=[DataRequired(), Length(min=1, max=250)],
+                        render_kw={"placeholder": "Seats available"})
+    has_toilet = BooleanField("Has Toilet", false_values=(False, "false", ""))
+    has_wifi = BooleanField("Has Wi-Fi", false_values=(False, "false", ""))
+    has_sockets = BooleanField("Has Sockets", false_values=(False, "false", ""))
+    can_take_calls = BooleanField("Accept Calls", false_values=(False, "false", ""))
+    coffee_price = StringField("Coffe Price", validators=[DataRequired(), Length(min=2, max=250)],
+                               render_kw={"placeholder": "Coffe Price from"})
+    submit = SubmitField("Add Cafe")
 
 
 @app.route("/")
@@ -83,12 +110,37 @@ def find_cafe():
     else:
         return jsonify(error={"Not found": "Sorry, we don't have a cafe at that location."}), 404
 
-    # HTTP POST - Create Record
-
-    # HTTP PUT/PATCH - Update Record
-
-    # HTTP DELETE - Delete Record
+        # HTTP POST - Create Record
 
 
-if __name__ == '__main__':
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    form = AddCafeForm()
+    validation = form.validate_on_submit()
+    if validation:
+        cafe = Cafe(
+            name=request.form["name"],
+            map_url=request.form["map_url"],
+            img_url=request.form["img_url"],
+            location=request.form["location"],
+            seats=request.form["seats"],
+            has_toilet=bool(request.form.get("has_toilet", False)),
+            has_wifi=bool(request.form.get("has_wifi", False)),
+            has_sockets=bool(request.form.get("has_sockets", False)),
+            can_take_calls=bool(request.form.get("can_take_calls", False)),
+            coffee_price=request.form["coffee_price"])
+        db.session.add(cafe)
+        db.session.commit()
+
+        return redirect(url_for('home'))
+
+    return render_template("add.html", form=form)
+
+
+# HTTP PUT/PATCH - Update Record
+
+# HTTP DELETE - Delete Record
+
+
+if __name__ == "__main__":
     app.run(debug=True)
