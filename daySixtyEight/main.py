@@ -69,7 +69,7 @@ def login():
 
         if email == form_email and password == form_password:
             flash("We find you in our system")
-            return redirect(url_for("home"))
+            return render_template("secrets.html", name=item.name.capitalize())
         else:
             flash("Wrong fields, Please check your email and password")
             return redirect(url_for("login"))
@@ -89,7 +89,7 @@ def logout():
 
 @app.route('/download')
 def download():
-    pass
+    return send_from_directory(directory='static', path='files/cheat_sheet.pdf')
 
 
 if __name__ == "__main__":
