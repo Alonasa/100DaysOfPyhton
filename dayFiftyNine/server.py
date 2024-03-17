@@ -1,10 +1,12 @@
 import os
 import smtplib
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
+from flask_ckeditor import CKEditor, CKEditorField
 from markupsafe import Markup
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
@@ -19,6 +21,7 @@ posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
 all_posts = requests.get(posts_api).json()
 app.config['SECRET_KEY'] = os.urandom(32)
 Bootstrap5(app)
+ckeditor = CKEditor(app)
 
 my_email = "all.junk.mails.my@gmail.com"
 password = "jjbw dcrj tzun uydj"
@@ -43,6 +46,9 @@ class BlogPost(db.Model):
     author: Mapped[str] = mapped_column(String(250), nullable=False)
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
 
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
 
 with app.app_context():
     db.create_all()
@@ -59,6 +65,7 @@ class AddPostForm(FlaskForm):
     subtitle = StringField("Subtitle", validators=[DataRequired()])
     name = StringField("Your Name", validators=[DataRequired()])
     img = URLField("Blog Image URL", validators=[DataRequired()])
+    body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
     submit = SubmitField("Submit Post")
 
 
@@ -117,9 +124,23 @@ def build_post(post_id):
     return render_template("post.html", posts=posts, id=post_id, translator=translator)
 
 
-@app.route("/new-post")
+@app.route("/new-post", methods=["GET", "POST"])
 def create_post():
     form = AddPostForm()
+    validation = form.validate_on_submit()
+    if validation:
+        new_post = BlogPost(
+            title=form.title.data.capitalize(),
+            subtitle=form.subtitle.data.capitalize(),
+            date=datetime.now().strftime("%B %d, %Y"),
+            body=form.body.data,
+            author=form.name.data,
+            img_url=form.img.data
+        )
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(url_for('build_main'))
+
     return render_template("add.html", form=form)
 
 
