@@ -69,6 +69,12 @@ class AddPostForm(FlaskForm):
     submit = SubmitField("Submit Post")
 
 
+@app.context_processor
+def inject_year():
+    current_year = datetime.now().year
+    return {'current_year': current_year}
+
+
 @app.route("/")
 def build_main():
     posts = posts_list()
@@ -141,16 +147,16 @@ def create_post():
         db.session.commit()
         return redirect(url_for('build_main'))
 
-    return render_template("add.html", form=form)
+    return render_template("add.html", form=form, is_edit=False)
 
 
-@app.route("/edit")
-def edit_post():
+@app.route("/edit-post/<int:post_id>")
+def edit_post(post_id):
+    form = AddPostForm()
     posts = posts_list()
-    post_id = request.args.get("id")
     for post in posts:
         if post.id == post_id:
-            return "I have that item"
+            return render_template('add.html', form=form, is_edit=True)
 
 
 if __name__ == "__main__":
