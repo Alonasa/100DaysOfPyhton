@@ -55,8 +55,25 @@ def register():
     return render_template("register.html")
 
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
+    data = db.session.execute(db.select(User))
+    data_list = data.scalars().all()
+
+    form_password = request.form.get("password")
+    form_email = request.form.get("email")
+
+    for item in data_list:
+        password = item.password
+        email = item.email
+
+        if email == form_email and password == form_password:
+            flash("We find you in our system")
+            return redirect(url_for("home"))
+        else:
+            flash("Wrong fields, Please check your email and password")
+            return redirect(url_for("login"))
+
     return render_template("login.html")
 
 
