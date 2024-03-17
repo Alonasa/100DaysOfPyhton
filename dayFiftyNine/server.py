@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import requests
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_ckeditor import CKEditor, CKEditorField
 from markupsafe import Markup
 from flask_bootstrap import Bootstrap5
@@ -145,6 +145,7 @@ def create_post():
         )
         db.session.add(new_post)
         db.session.commit()
+        flash("New Post Added")
         return redirect(url_for('build_main'))
 
     return render_template("add.html", form=form, is_edit=False)
@@ -156,11 +157,29 @@ def edit_post(post_id):
     form = AddPostForm(obj=db_post)
 
     if form.validate_on_submit():
-        form.populate_obj(db_post)
-        db.session.commit()
-        return redirect(url_for("build_post", post_id=post_id))
+        if form.data != form.data.get("_obj"):  # Check if the form data has changed
+            form.populate_obj(db_post)  # Update fields of db_post with form data
+            db.session.commit()  # Save changes to the database
+            flash("Fields have been changed!", "success")
+        else:
+            flash("No changes were made.", "info")
+        return redirect(url_for("view_post", post_id=post_id))
 
     return render_template("add.html", form=form, is_edit=True)
+
+
+@app.route("/delete/<int:post_id>")
+def delete_post(post_id):
+    post = db.get_or_404(BlogPost, post_id)
+
+    if post:
+        db.session.delete(post)
+        db.session.commit()
+        flash("Post Deleted Successfully")
+        return redirect(url_for('build_main'))
+    else:
+        flash("Post not found")
+        return redirect(url_for('build_main'))
 
 
 if __name__ == "__main__":
