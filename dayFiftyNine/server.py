@@ -63,8 +63,8 @@ def posts_list():
 class AddPostForm(FlaskForm):
     title = StringField("Blog Post Title", validators=[DataRequired()])
     subtitle = StringField("Subtitle", validators=[DataRequired()])
-    name = StringField("Your Name", validators=[DataRequired()])
-    img = URLField("Blog Image URL", validators=[DataRequired()])
+    author = StringField("Your Name", validators=[DataRequired()])
+    img_url = URLField("Blog Image URL", validators=[DataRequired()])
     body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
     submit = SubmitField("Submit Post")
 
@@ -140,8 +140,8 @@ def create_post():
             subtitle=form.subtitle.data.capitalize(),
             date=datetime.now().strftime("%B %d, %Y"),
             body=form.body.data,
-            author=form.name.data,
-            img_url=form.img.data
+            author=form.author.data,
+            img_url=form.img_url.data
         )
         db.session.add(new_post)
         db.session.commit()
@@ -150,13 +150,17 @@ def create_post():
     return render_template("add.html", form=form, is_edit=False)
 
 
-@app.route("/edit-post/<int:post_id>")
+@app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
 def edit_post(post_id):
-    form = AddPostForm()
-    posts = posts_list()
-    for post in posts:
-        if post.id == post_id:
-            return render_template('add.html', form=form, is_edit=True)
+    db_post = db.get_or_404(BlogPost, post_id)
+    form = AddPostForm(obj=db_post)
+
+    if form.validate_on_submit():
+        form.populate_obj(db_post)
+        db.session.commit()
+        return redirect(url_for("build_post", post_id=post_id))
+
+    return render_template("add.html", form=form, is_edit=True)
 
 
 if __name__ == "__main__":
