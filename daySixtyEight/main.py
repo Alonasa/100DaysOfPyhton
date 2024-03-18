@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, flash, send_from_directory
+from flask import Flask, render_template, request, url_for, redirect, flash, send_from_directory, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -6,7 +6,7 @@ from sqlalchemy import Integer, String
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret-key-goes-here'
+app.config["SECRET_KEY"] = "secret-key-goes-here"
 
 
 # CREATE DATABASE
@@ -14,7 +14,7 @@ class Base(DeclarativeBase):
     pass
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -34,17 +34,17 @@ with app.app_context():
     db.create_all()
 
 
-@app.route('/')
+@app.route("/")
 def home():
     return render_template("index.html")
 
 
-@app.route('/register', methods=["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         new_user = User(
             email=request.form.get("email"),
-            password=generate_password_hash(password=request.form.get("password"), method='pbkdf2', salt_length=8),
+            password=generate_password_hash(password=request.form.get("password"), method="pbkdf2", salt_length=8),
             name=request.form.get("name")
         )
         db.session.add(new_user)
@@ -55,7 +55,7 @@ def register():
     return render_template("register.html")
 
 
-@app.route('/login', methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     data = db.session.execute(db.select(User))
     data_list = data.scalars().all()
@@ -74,6 +74,8 @@ def login():
         email = item.email
 
         if email == form_email and password:
+            session["authorized"] = True
+            session["username"] = item.name.capitalize()
             return render_template("secrets.html", name=item.name.capitalize())
         else:
             flash("Wrong fields. Please check your email and password")
@@ -82,19 +84,27 @@ def login():
     return render_template("login.html")
 
 
-@app.route('/secrets')
+@app.route("/secrets")
 def secrets():
-    return render_template("secrets.html")
+    authorized = session.get("authorized")
+    user = session.get("username")
+
+    if authorized:
+        return render_template("secrets.html", name=user)
+    else:
+        flash("You dont have a permission to see this page!")
+        return redirect(url_for("login"))
 
 
-@app.route('/logout')
+@app.route("/logout")
 def logout():
-    pass
+    session.pop("authorized", None)
+    return redirect(url_for("login"))
 
 
-@app.route('/download')
+@app.route("/download")
 def download():
-    return send_from_directory(directory='static', path='files/cheat_sheet.pdf')
+    return send_from_directory(directory="static", path="files/cheat_sheet.pdf")
 
 
 if __name__ == "__main__":
