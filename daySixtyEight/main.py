@@ -44,13 +44,13 @@ def register():
     if request.method == "POST":
         new_user = User(
             email=request.form.get("email"),
-            password=request.form.get("password"),
+            password=generate_password_hash(password=request.form.get("password"), method='scrypt', salt_length=16),
             name=request.form.get("name")
         )
         db.session.add(new_user)
         db.session.commit()
         flash("New User Is Added")
-        return "I am added"
+        return redirect(url_for("login"))
 
     return render_template("register.html")
 
@@ -63,18 +63,48 @@ def login():
     form_password = request.form.get("password")
     form_email = request.form.get("email")
 
+    if len(data_list) == 0:
+        return render_template("register.html")
+
+    if form_email is None and form_password is None:
+        return render_template("login.html")
+
     for item in data_list:
         password = item.password
         email = item.email
 
         if email == form_email and password == form_password:
-            flash("We find you in our system")
             return render_template("secrets.html", name=item.name.capitalize())
         else:
-            flash("Wrong fields, Please check your email and password")
-            return redirect(url_for("login"))
+            flash("Wrong fields. Please check your email and password")
 
+    flash("Wrong credentials. Please check your email and password")
     return render_template("login.html")
+
+
+# @app.route('/login', methods=["GET", "POST"])
+# def login():
+#     data = db.session.execute(db.select(User))
+#     data_list = data.scalars().all()
+#
+#     form_password = request.form.get("password")
+#     form_email = request.form.get("email")
+#
+#     if not data_list:
+#         return redirect(url_for("register"))
+#     else:
+#         for item in data_list:
+#             password = item.password
+#             email = item.email
+#
+#             if email == form_email and password == form_password:
+#                 flash("We find you in our system")
+#                 return render_template("secrets.html", name=item.name.capitalize())
+#             else:
+#                 flash("Wrong fields, Please check your email and password")
+#                 return redirect(url_for("login"))
+#
+#     return render_template("login.html")
 
 
 @app.route('/secrets')
