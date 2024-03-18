@@ -55,12 +55,19 @@ def home():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    form_email = request.form.get("email")
+    user = db.session.execute(db.select(User).where(User.email == form_email))
+
     if request.method == "POST":
         new_user = User(
             email=request.form.get("email"),
             password=generate_password_hash(password=request.form.get("password"), method="pbkdf2", salt_length=8),
             name=request.form.get("name")
         )
+
+        if user:
+            return render_template("login.html", message="You've already signed with this email. Please sign-in "
+                                                         "instead")
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
@@ -93,7 +100,7 @@ def login():
     else:
         flash("Wrong fields. Please check your email and password")
 
-    return render_template("login.html")
+    return render_template("login.html", message="Wrong fields. Please check your email and password")
 
 
 @app.route("/secrets")
