@@ -14,7 +14,7 @@ class Base(DeclarativeBase):
     pass
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -44,7 +44,7 @@ def register():
     if request.method == "POST":
         new_user = User(
             email=request.form.get("email"),
-            password=generate_password_hash(password=request.form.get("password"), method='scrypt', salt_length=16),
+            password=generate_password_hash(password=request.form.get("password"), method='pbkdf2', salt_length=8),
             name=request.form.get("name")
         )
         db.session.add(new_user)
@@ -70,41 +70,16 @@ def login():
         return render_template("login.html")
 
     for item in data_list:
-        password = item.password
+        password = check_password_hash(item.password, form_password)
         email = item.email
 
-        if email == form_email and password == form_password:
+        if email == form_email and password:
             return render_template("secrets.html", name=item.name.capitalize())
         else:
             flash("Wrong fields. Please check your email and password")
 
     flash("Wrong credentials. Please check your email and password")
     return render_template("login.html")
-
-
-# @app.route('/login', methods=["GET", "POST"])
-# def login():
-#     data = db.session.execute(db.select(User))
-#     data_list = data.scalars().all()
-#
-#     form_password = request.form.get("password")
-#     form_email = request.form.get("email")
-#
-#     if not data_list:
-#         return redirect(url_for("register"))
-#     else:
-#         for item in data_list:
-#             password = item.password
-#             email = item.email
-#
-#             if email == form_email and password == form_password:
-#                 flash("We find you in our system")
-#                 return render_template("secrets.html", name=item.name.capitalize())
-#             else:
-#                 flash("Wrong fields, Please check your email and password")
-#                 return redirect(url_for("login"))
-#
-#     return render_template("login.html")
 
 
 @app.route('/secrets')
