@@ -19,6 +19,7 @@ from wtforms import StringField, URLField, SubmitField, EmailField, PasswordFiel
 from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
 all_posts = requests.get(posts_api).json()
 app.config['SECRET_KEY'] = os.urandom(32)
@@ -26,11 +27,18 @@ Bootstrap(app)
 ckeditor = CKEditor(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-csrf = CSRFProtect(app)
 
 my_email = "all.junk.mails.my@gmail.com"
 password = "jjbw dcrj tzun uydj"
 email = "all.junk.mails.my@gmail.com"
+
+
+@app.context_processor
+def inject_logged_in():
+    def is_logged_in():
+        return current_user.is_authenticated
+
+    return dict(is_logged_in=is_logged_in)
 
 
 @login_manager.user_loader
@@ -234,7 +242,7 @@ def login():
             if check_password:
                 login_user(user, remember=True)
                 flash("USER AUTHORIZED IN THE SYSTEM")
-                return render_template("user.html", logged_in=True, user=current_user.to_dict())
+                return render_template("user.html", user=current_user.to_dict())
             else:
                 flash("Wrong Password")
                 return render_template("login.html", form=form, message="Please check your password")
@@ -274,15 +282,16 @@ def register():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
-    return redirect(url_for("home"))
+    return render_template("index.html")
 
 
 @app.route("/user")
 @login_required
 def user():
-    return render_template("user.html", user=current_user.to_dict(), is_loggedin=True)
+    return render_template("user.html", user=current_user.to_dict())
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, url_for, redirect, flash, send_from_directory, session
+from flask import Flask, render_template, request, url_for, redirect, flash, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
