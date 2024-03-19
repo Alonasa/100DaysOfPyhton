@@ -8,19 +8,19 @@ import requests
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_ckeditor import CKEditor, CKEditorField
 from markupsafe import Markup
-from flask_bootstrap import Bootstrap5
+from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from sqlalchemy import Integer, Text, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from wtforms import StringField, URLField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, URLField, SubmitField, EmailField, PasswordField
+from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__)
 posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
 all_posts = requests.get(posts_api).json()
 app.config['SECRET_KEY'] = os.urandom(32)
-Bootstrap5(app)
+Bootstrap(app)
 ckeditor = CKEditor(app)
 
 my_email = "all.junk.mails.my@gmail.com"
@@ -50,6 +50,16 @@ class BlogPost(db.Model):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
+class User(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    username: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(250), nullable=False)
+
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
 with app.app_context():
     db.create_all()
 
@@ -67,6 +77,19 @@ class AddPostForm(FlaskForm):
     img_url = URLField("Blog Image URL", validators=[DataRequired()])
     body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
     submit = SubmitField("Submit Post")
+
+
+class RegisterForm(FlaskForm):
+    name = StringField("Your Name", validators=[DataRequired(), Length(min=2)])
+    email = EmailField("Your Email", validators=[DataRequired()])
+    password = PasswordField("Your Passwords", validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField("Register", render_kw={"class": "btn-primary btn-sm mt-3"})
+
+
+class LoginForm(FlaskForm):
+    email = EmailField("Your Email", validators=[DataRequired()])
+    password = PasswordField("Your Passwords", validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField("Register")
 
 
 @app.context_processor
@@ -180,6 +203,33 @@ def delete_post(post_id):
     else:
         flash("Post not found")
         return redirect(url_for('build_main'))
+
+
+@app.route("/login")
+def login():
+    pass
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        new_user = User(
+            username=request.form.get("name"),
+            email=request.form.get("email"),
+            password=request.form.get("password")
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        flash("New User Has Added")
+        redirect(url_for("login"))
+
+    return render_template("register.html", form=form)
+
+
+@app.route("/logout")
+def logout():
+    pass
 
 
 if __name__ == "__main__":
