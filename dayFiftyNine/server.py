@@ -7,6 +7,8 @@ from email.mime.text import MIMEText
 import requests
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_ckeditor import CKEditor, CKEditorField
+from flask_login import login_user, UserMixin, LoginManager, login_required, current_user, logout_user
+from flask_wtf.csrf import CSRFProtect
 from markupsafe import Markup
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -22,10 +24,18 @@ all_posts = requests.get(posts_api).json()
 app.config['SECRET_KEY'] = os.urandom(32)
 Bootstrap(app)
 ckeditor = CKEditor(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+csrf = CSRFProtect(app)
 
 my_email = "all.junk.mails.my@gmail.com"
 password = "jjbw dcrj tzun uydj"
 email = "all.junk.mails.my@gmail.com"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
 
 
 class Base(DeclarativeBase):
@@ -50,11 +60,16 @@ class BlogPost(db.Model):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(250), nullable=False)
+
+    def __init__(self, email, password, username):
+        self.email = email
+        self.password = password
+        self.name = username
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -89,7 +104,7 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = EmailField("Your Email", validators=[DataRequired()])
     password = PasswordField("Your Passwords", validators=[DataRequired(), Length(min=8)])
-    submit = SubmitField("Register")
+    submit = SubmitField("Login", render_kw={"class": "btn-primary btn-sm mt-3"})
 
 
 @app.context_processor
@@ -205,22 +220,53 @@ def delete_post(post_id):
         return redirect(url_for('build_main'))
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    pass
+    form = LoginForm()
+    password = request.form.get("password")
+    email = request.form.get("email")
+
+    if request.method == "POST" and form.validate_on_submit():
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
+
+        if user:
+            check_password = user.password == password
+            if check_password:
+                login_user(user, remember=True)
+                flash("USER AUTHORIZED IN THE SYSTEM")
+                return render_template("user.html", logged_in=True, user=current_user.to_dict())
+            else:
+                flash("Wrong Password")
+                return render_template("login.html", form=form, message="Please check your password")
+        else:
+            flash("We don't find you in our system... Redirecting to registration...")
+            return render_template("login.html", form=form,
+                                   message=("You are not registered in our system. Please check your data "
+                                            "or follow to Registration"))
+
+    return render_template("login.html", form=form)
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
+    form_email = request.form.get("email")
+    user = db.session.execute(db.select(User).where(User.email == form_email))
+
+    if request.method == "POST" and form.validate_on_submit():
+        if user:
+            flash("You Already Have An Account... Redirecting To Login")
+            return redirect(url_for("login"))
+
         new_user = User(
             username=request.form.get("name"),
-            email=request.form.get("email"),
+            email=form_email,
             password=request.form.get("password")
         )
+
         db.session.add(new_user)
         db.session.commit()
+        login_user(new_user)
         flash("New User Has Added")
         redirect(url_for("login"))
 
@@ -229,7 +275,14 @@ def register():
 
 @app.route("/logout")
 def logout():
-    pass
+    logout_user()
+    return redirect(url_for("home"))
+
+
+@app.route("/user")
+@login_required
+def user():
+    return render_template("user.html", user=current_user.to_dict(), is_loggedin=True)
 
 
 if __name__ == "__main__":
