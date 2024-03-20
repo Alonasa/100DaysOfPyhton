@@ -6,15 +6,16 @@ from email.mime.text import MIMEText
 
 import requests
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor, CKEditorField
 from flask_login import login_user, UserMixin, LoginManager, login_required, current_user, logout_user
-from flask_wtf.csrf import CSRFProtect
-from markupsafe import Markup
-from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect
+from markupsafe import Markup
 from sqlalchemy import Integer, Text, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import StringField, URLField, SubmitField, EmailField, PasswordField
 from wtforms.validators import DataRequired, Length
 
@@ -69,15 +70,15 @@ class BlogPost(db.Model):
 
 
 class User(UserMixin, db.Model):
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(250), nullable=False)
 
-    def __init__(self, email, password, username):
+    def __init__(self, email, password, name):
         self.email = email
         self.password = password
-        self.name = username
+        self.name = name
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -85,6 +86,11 @@ class User(UserMixin, db.Model):
 
 with app.app_context():
     db.create_all()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
 
 
 def posts_list():
@@ -105,13 +111,13 @@ class AddPostForm(FlaskForm):
 class RegisterForm(FlaskForm):
     name = StringField("Your Name", validators=[DataRequired(), Length(min=2)])
     email = EmailField("Your Email", validators=[DataRequired()])
-    password = PasswordField("Your Passwords", validators=[DataRequired(), Length(min=8)])
+    password = PasswordField("Your Password", validators=[DataRequired(), Length(min=8)])
     submit = SubmitField("Register", render_kw={"class": "btn-primary btn-sm mt-3"})
 
 
 class LoginForm(FlaskForm):
     email = EmailField("Your Email", validators=[DataRequired()])
-    password = PasswordField("Your Passwords", validators=[DataRequired(), Length(min=8)])
+    password = PasswordField("Your Password", validators=[DataRequired(), Length(min=8)])
     submit = SubmitField("Login", render_kw={"class": "btn-primary btn-sm mt-3"})
 
 
@@ -238,7 +244,7 @@ def login():
         user = db.session.execute(db.select(User).where(User.email == email)).scalar()
 
         if user:
-            check_password = user.password == password
+            check_password = check_password_hash(user.password, password)
             if check_password:
                 login_user(user, remember=True)
                 flash("USER AUTHORIZED IN THE SYSTEM")
@@ -259,24 +265,23 @@ def login():
 def register():
     form = RegisterForm()
     form_email = request.form.get("email")
-    user = db.session.execute(db.select(User).where(User.email == form_email))
+    check_user = db.session.execute(db.select(User).where(User.email == form_email))
 
     if request.method == "POST" and form.validate_on_submit():
-        if user:
+        if check_user:
             flash("You Already Have An Account... Redirecting To Login")
             return redirect(url_for("login"))
-
         new_user = User(
-            username=request.form.get("name"),
+            name=request.form.get("name"),
             email=form_email,
-            password=request.form.get("password")
+            password=generate_password_hash(password=request.form.get("password"), method="pbkdf2", salt_length=8)
         )
 
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
         flash("New User Has Added")
-        redirect(url_for("login"))
+        return redirect(url_for("login"))
 
     return render_template("register.html", form=form)
 
