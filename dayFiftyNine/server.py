@@ -3,9 +3,10 @@ import smtplib
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from functools import wraps
 
 import requests
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor, CKEditorField
 from flask_login import login_user, UserMixin, LoginManager, login_required, current_user, logout_user
@@ -32,6 +33,16 @@ login_manager.init_app(app)
 my_email = "all.junk.mails.my@gmail.com"
 password = "jjbw dcrj tzun uydj"
 email = "all.junk.mails.my@gmail.com"
+
+
+def admin_only(f):
+    @wraps(f)
+    def decorator_function(*args, **kwargs):
+        if (current_user.is_authenticated and current_user.id != 1) or (not current_user.is_authenticated):
+            return abort(403)
+        return f(*args, **kwargs)
+
+    return decorator_function
 
 
 @app.context_processor
@@ -183,6 +194,7 @@ def build_post(post_id):
 
 
 @app.route("/new-post", methods=["GET", "POST"])
+@admin_only
 def create_post():
     form = AddPostForm()
     validation = form.validate_on_submit()
@@ -204,6 +216,7 @@ def create_post():
 
 
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+@admin_only
 def edit_post(post_id):
     db_post = db.get_or_404(BlogPost, post_id)
     form = AddPostForm(obj=db_post)
@@ -221,6 +234,7 @@ def edit_post(post_id):
 
 
 @app.route("/delete/<int:post_id>")
+@admin_only
 def delete_post(post_id):
     post = db.get_or_404(BlogPost, post_id)
 
@@ -296,7 +310,7 @@ def logout():
 @app.route("/user")
 @login_required
 def user():
-    return render_template("user.html", user=current_user.to_dict())
+    return render_template("user.html", current_user=current_user, user=current_user.to_dict())
 
 
 if __name__ == "__main__":
