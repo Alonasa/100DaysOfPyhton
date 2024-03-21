@@ -126,8 +126,8 @@ def posts_list():
     return posts
 
 
-def comments_list():
-    comments = db.session.execute(db.select(BlogPost.comments)).scalars().all()
+def comments_list(post_id):
+    comments = db.session.execute(db.select(BlogPost).where(BlogPost.id == post_id)).scalars().all()
     return comments
 
 
@@ -211,12 +211,12 @@ def build_contact():
     return render_template("contact.html")
 
 
-@app.route("/posts/post/<int:post_id>")
+@app.route("/posts/post/<int:post_id>", methods=["GET", "POST"])
 def build_post(post_id):
     authenticated = current_user.is_authenticated
     form = AddCommentForm()
     posts = posts_list()
-    comments = comments_list()
+    comments = comments_list(post_id)
     translator = Markup
     return render_template("post.html", posts=posts, id=post_id, translator=translator, authenticated=authenticated,
                            form=form, comments=comments)
@@ -277,6 +277,22 @@ def delete_post(post_id):
         return redirect(url_for('build_main'))
 
 
+@app.route("/new-comment/<int:post_id>", methods=["GET", "POST"])
+def create_comment(post_id):
+    form = AddCommentForm()
+    validation = form.validate_on_submit()
+    if validation:
+        new_comment = Comment(
+            text=form.body.data,
+            author_id=current_user.id,
+            post_id=post_id
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        flash("New Comment Added")
+        return redirect(url_for('build_post', post_id=post_id))
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -309,7 +325,6 @@ def login():
 def register():
     form = RegisterForm()
     form_email = request.form.get("email")
-    check_user = db.session.execute(db.select(User).where(User.email == form_email))
 
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(email=form_email).first()

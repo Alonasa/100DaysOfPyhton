@@ -16,7 +16,7 @@
               rel="stylesheet" type="text/css"/>
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="../../static/css/styles.css" rel="stylesheet"/>
-    
+        {% from "bootstrap5/form.html" import render_form %}
     </head>
     <body>
         <!-- Navigation-->
@@ -55,22 +55,37 @@
                         {% endif %}
                     </div>
                     {% if authenticated %}
-                    <form method="POST">
+                    <form method="POST" action="/new-comment/{{post.id}}">
                         {{ form.csrf_token }}
                         {{ ckeditor.load()}}
                         {{ ckeditor.config(language='en', name='body', width=600) }}
                         {{render_form(form, novalidate=True)}}
                     </form>
                     {% endif %}
-                    {% if comments %}
                     {% for comment in comments %}
-                    <div>
-                        <h4>{{comment.author}}</h4>
-                        <p>{{comment.text}}</p>
-                    
+                    {% for com in comment.comments %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex flex-start align-items-center">
+                                <div>
+                                    <img class="rounded-circle shadow-1-strong me-3"
+                                         src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp" alt="avatar"
+                                         width="60"
+                                         height="60"/>
+                                    <h6 class="fw-bold text-primary mb-1">{{comment.author.name}}</h6>
+                                </div>
+                                <div>
+                                    {{translator(com.text)}}
+                                </div>
+                            </div>
+                            
+                            <h4></h4>
+                        
+                        
+                        </div>
                     </div>
                     {% endfor %}
-                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </article>
