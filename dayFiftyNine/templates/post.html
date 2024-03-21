@@ -54,6 +54,23 @@
                         </a>
                         {% endif %}
                     </div>
+                    {% if authenticated %}
+                    <form method="POST">
+                        {{ form.csrf_token }}
+                        {{ ckeditor.load()}}
+                        {{ ckeditor.config(language='en', name='body', width=600) }}
+                        {{render_form(form, novalidate=True)}}
+                    </form>
+                    {% endif %}
+                    {% if comments %}
+                    {% for comment in comments %}
+                    <div>
+                        <h4>{{comment.author}}</h4>
+                        <p>{{comment.text}}</p>
+                    
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </article>

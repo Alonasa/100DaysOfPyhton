@@ -5,7 +5,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from functools import wraps
 
-import requests
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor, CKEditorField
@@ -21,9 +20,6 @@ from wtforms import StringField, URLField, SubmitField, EmailField, PasswordFiel
 from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__)
-
-posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
-all_posts = requests.get(posts_api).json()
 app.config['SECRET_KEY'] = os.urandom(32)
 
 csrf = CSRFProtect(app)
@@ -70,31 +66,46 @@ db.init_app(app)
 
 
 class BlogPost(db.Model):
+    __tablename__ = "blog_posts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
     date: Mapped[str] = mapped_column(String(250), nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
     author = relationship("User", back_populates="posts")
-    author_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'))
+    author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+    comments = relationship("Comment", back_populates="parent_post")
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    author = relationship("User", back_populates="comments")
+    parent_post = relationship("BlogPost", back_populates="comments")
+    post_id: Mapped[int] = mapped_column(Integer, ForeignKey("blog_posts.id"))
+
+
 class User(UserMixin, db.Model):
+    __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(250), nullable=False)
     posts = relationship("BlogPost")
+    comments = relationship("Comment", back_populates="author")
 
-    def __init__(self, email, password, name, posts=None):
+    def __init__(self, email, password, name, posts=None, comments=None):
         self.email = email
         self.password = password
         self.name = name
         self.posts = posts or []
+        self.comments = comments or []
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -115,12 +126,22 @@ def posts_list():
     return posts
 
 
+def comments_list():
+    comments = db.session.execute(db.select(BlogPost.comments)).scalars().all()
+    return comments
+
+
 class AddPostForm(FlaskForm):
     title = StringField("Blog Post Title", validators=[DataRequired()])
     subtitle = StringField("Subtitle", validators=[DataRequired()])
     img_url = URLField("Blog Image URL", validators=[DataRequired()])
     body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
     submit = SubmitField("Submit Post")
+
+
+class AddCommentForm(FlaskForm):
+    body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
+    submit = SubmitField("Leave Comment")
 
 
 class RegisterForm(FlaskForm):
@@ -192,9 +213,13 @@ def build_contact():
 
 @app.route("/posts/post/<int:post_id>")
 def build_post(post_id):
+    authenticated = current_user.is_authenticated
+    form = AddCommentForm()
     posts = posts_list()
+    comments = comments_list()
     translator = Markup
-    return render_template("post.html", posts=posts, id=post_id, translator=translator)
+    return render_template("post.html", posts=posts, id=post_id, translator=translator, authenticated=authenticated,
+                           form=form, comments=comments)
 
 
 @app.route("/new-post", methods=["GET", "POST"])
