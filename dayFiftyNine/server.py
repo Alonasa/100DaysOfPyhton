@@ -21,10 +21,12 @@ from wtforms import StringField, URLField, SubmitField, EmailField, PasswordFiel
 from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__)
-csrf = CSRFProtect(app)
+
 posts_api = "https://api.npoint.io/2241ceff81d5eee97ca6"
 all_posts = requests.get(posts_api).json()
 app.config['SECRET_KEY'] = os.urandom(32)
+
+csrf = CSRFProtect(app)
 Bootstrap(app)
 ckeditor = CKEditor(app)
 login_manager = LoginManager()
@@ -230,7 +232,7 @@ def edit_post(post_id):
             flash("Fields have been changed!", "success")
         else:
             flash("No changes were made.", "info")
-        return redirect(url_for("view_post", post_id=post_id))
+        return redirect(url_for("build_post", post_id=post_id))
 
     return render_template("add.html", form=form, is_edit=True)
 

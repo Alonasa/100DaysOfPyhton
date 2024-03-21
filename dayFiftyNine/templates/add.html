@@ -2,6 +2,9 @@
 {% set h1 = "Edit Post" %}
 {% set title = "Edit your old post" %}
 {% set description = "Here You Can Edit Your Post" %}
+{% block extra_style %}
+<link href="../static/css/styles.css" rel="stylesheet"/>
+{% endblock %}
 {% include "base-form.html" %}
 {% else %}
 {% set title = "Alona's Blog - Add New Post" %}
