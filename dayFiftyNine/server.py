@@ -368,8 +368,11 @@ def user():
 @app.route('/authors/<author_name>')
 def user_profile(author_name):
     user = User.query.filter_by(name=author_name.capitalize()).first()
+    translator = Markup
+
     if user:
-        return render_template("user.html", user=user.to_dict())
+        posts = BlogPost.query.filter_by(author=user).all()
+        return render_template("user.html", user=user.to_dict(), posts=posts, translator=translator)
     else:
         return "Author not found"
 
