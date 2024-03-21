@@ -51,7 +51,8 @@
         <div class="row card gx-4 gx-lg-5 justify-content-center">
             <div>
                 <a href="/posts/post/{{post.id}}">
-                    {{translator(post.body)}}
+                    {{ translator(post.body|truncate(100, True, '')) }}
+                    {% if post.body|length > 100 %}...{% endif %}
                     Read More</a>
                 <p class="m-0"><b>Posted on: </b>{{post.date}}</p>
                 {% if current_user.id == post.author.id %}
