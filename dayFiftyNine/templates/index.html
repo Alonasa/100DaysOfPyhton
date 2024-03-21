@@ -10,7 +10,7 @@
             <!-- Post preview-->
             {% for post in posts %}
             <div class="post-preview position-relative">
-                {% if current_user.id == 1 %}
+                {% if current_user.id == post.author_id %}
                 <a href="{{url_for('delete_post', post_id=post.id)}}"
                    class="btn btn-sm position-absolute end-0">X</a>
                 {% endif %}
@@ -20,7 +20,7 @@
                 </a>
                 <p class="post-meta">
                     Posted by
-                    <a href="authors/{{post.author}}">{{post.author.name}}</a>
+                    <a href="authors/{{post.author.name.lower()}}">{{post.author.name}}</a>
                     on {{post.date}}
                 </p>
             </div>
@@ -28,7 +28,7 @@
             <hr class="my-4"/>
             <!-- Pager-->
             {% endfor %}
-            {% if current_user.id == 1 %}
+            {% if authenticated %}
             <div class="d-flex justify-content-end mb-4"><a class="btn btn-sm btn-primary text-uppercase"
                                                             href="{{url_for('create_post')}}">Add Post
                 →</a></div>

@@ -19,7 +19,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import StringField, URLField, SubmitField, EmailField, PasswordField
 from wtforms.validators import DataRequired, Length
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(32)
 
 csrf = CSRFProtect(app)
@@ -68,7 +68,7 @@ db.init_app(app)
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(250), nullable=False)
     subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
     date: Mapped[str] = mapped_column(String(250), nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
@@ -137,7 +137,7 @@ class AddPostForm(FlaskForm):
     subtitle = StringField("Subtitle", validators=[DataRequired()])
     img_url = URLField("Blog Image URL", validators=[DataRequired()])
     body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
-    submit = SubmitField("Submit Post")
+    submit = SubmitField("Submit Post", render_kw={"class": "btn-primary btn-sm mt-3"})
 
 
 class AddCommentForm(FlaskForm):
@@ -166,8 +166,9 @@ def inject_year():
 
 @app.route("/")
 def build_main():
+    authenticated = current_user.is_authenticated
     posts = posts_list()
-    return render_template("index.html", posts=posts)
+    return render_template("index.html", posts=posts, authenticated=authenticated)
 
 
 @app.route("/about")
@@ -225,7 +226,7 @@ def build_post(post_id):
 
 
 @app.route("/new-post", methods=["GET", "POST"])
-@admin_only
+@login_required
 def create_post():
     form = AddPostForm()
     validation = form.validate_on_submit()
@@ -247,7 +248,7 @@ def create_post():
 
 
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
-@admin_only
+@login_required
 def edit_post(post_id):
     db_post = db.get_or_404(BlogPost, post_id)
     form = AddPostForm(obj=db_post)
@@ -265,7 +266,7 @@ def edit_post(post_id):
 
 
 @app.route("/delete/<int:post_id>")
-@admin_only
+@login_required
 def delete_post(post_id):
     post = db.get_or_404(BlogPost, post_id)
 
@@ -280,6 +281,7 @@ def delete_post(post_id):
 
 
 @app.route("/new-comment/<int:post_id>", methods=["GET", "POST"])
+@login_required
 def create_comment(post_id):
     form = AddCommentForm()
     validation = form.validate_on_submit()
@@ -361,6 +363,15 @@ def logout():
 @login_required
 def user():
     return render_template("user.html", current_user=current_user, user=current_user.to_dict())
+
+
+@app.route('/authors/<author_name>')
+def user_profile(author_name):
+    user = User.query.filter_by(name=author_name.capitalize()).first()
+    if user:
+        return render_template("user.html", user=user.to_dict())
+    else:
+        return "Author not found"
 
 
 if __name__ == "__main__":

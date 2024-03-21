@@ -116,7 +116,7 @@
                 <form method="POST" action="/new-comment/{{post.id}}">
                     {{ form.csrf_token }}
                     {{ ckeditor.load()}}
-                    {{ ckeditor.config(language='en', name='body', width=600) }}
+                    {{ ckeditor.config(language='en', name='body', width=600)}}
                     {{render_form(form, novalidate=True)}}
                 </form>
                 {% endif %}
