@@ -14,8 +14,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
 from markupsafe import Markup
-from sqlalchemy import Integer, Text, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, Text, String, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import StringField, URLField, SubmitField, EmailField, PasswordField
 from wtforms.validators import DataRequired, Length
@@ -73,7 +73,8 @@ class BlogPost(db.Model):
     subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
     date: Mapped[str] = mapped_column(String(250), nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
-    author: Mapped[str] = mapped_column(String(250), nullable=False)
+    author = relationship("User", back_populates="posts")
+    author_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'))
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
 
     def to_dict(self):
@@ -85,11 +86,13 @@ class User(UserMixin, db.Model):
     name: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(250), nullable=False)
+    posts = relationship("BlogPost")
 
-    def __init__(self, email, password, name):
+    def __init__(self, email, password, name, posts=None):
         self.email = email
         self.password = password
         self.name = name
+        self.posts = posts or []
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -113,7 +116,6 @@ def posts_list():
 class AddPostForm(FlaskForm):
     title = StringField("Blog Post Title", validators=[DataRequired()])
     subtitle = StringField("Subtitle", validators=[DataRequired()])
-    author = StringField("Your Name", validators=[DataRequired()])
     img_url = URLField("Blog Image URL", validators=[DataRequired()])
     body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
     submit = SubmitField("Submit Post")
@@ -204,8 +206,8 @@ def create_post():
             subtitle=form.subtitle.data.capitalize(),
             date=datetime.now().strftime("%B %d, %Y"),
             body=form.body.data,
-            author=form.author.data,
-            img_url=form.img_url.data
+            img_url=form.img_url.data,
+            author_id=current_user.id
         )
         db.session.add(new_post)
         db.session.commit()
@@ -260,6 +262,7 @@ def login():
         if user:
             check_password = check_password_hash(user.password, password)
             if check_password:
+
                 login_user(user, remember=True)
                 flash("USER AUTHORIZED IN THE SYSTEM")
                 return render_template("user.html", user=current_user.to_dict())
@@ -282,7 +285,9 @@ def register():
     check_user = db.session.execute(db.select(User).where(User.email == form_email))
 
     if request.method == "POST" and form.validate_on_submit():
-        if check_user:
+        user = User.query.filter_by(email=form_email).first()
+
+        if user:
             flash("You Already Have An Account... Redirecting To Login")
             return redirect(url_for("login"))
         new_user = User(

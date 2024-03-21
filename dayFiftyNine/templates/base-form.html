@@ -9,11 +9,13 @@
             {% if message %}
             <p class="text-danger">{{message}}<a href="/register" class="btn text-primary">Register</a></p>
             {% endif %}
-            {{ form.csrf_token }}
-            {{ ckeditor.load()}}
-            {{ ckeditor.config(language='en', name='body', width=600) }}
-            {{render_form(form, novalidate=True)}}
-        
+            <form method="POST">
+                {{ form.csrf_token }}
+                {{ ckeditor.load()}}
+                {{ ckeditor.config(language='en', name='body', width=600) }}
+                {{render_form(form, novalidate=True)}}
+            
+            </form>
         </div>
     </div>
 </div>
