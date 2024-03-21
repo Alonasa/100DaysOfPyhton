@@ -10,6 +10,7 @@
             <p class="text-danger">{{message}}<a href="/register" class="btn text-primary">Register</a></p>
             {% endif %}
             <form method="POST">
+                {{ form.hidden_tag() }}
                 {{ form.csrf_token }}
                 {{ ckeditor.load()}}
                 {{ ckeditor.config(language='en', name='body', width=600) }}

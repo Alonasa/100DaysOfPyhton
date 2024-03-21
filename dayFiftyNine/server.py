@@ -85,6 +85,7 @@ class Comment(db.Model):
     __tablename__ = "comments"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
+    date: Mapped[str] = mapped_column(String(250), nullable=False)
     text: Mapped[str] = mapped_column(Text, nullable=False)
     author = relationship("User", back_populates="comments")
     parent_post = relationship("BlogPost", back_populates="comments")
@@ -141,7 +142,7 @@ class AddPostForm(FlaskForm):
 
 class AddCommentForm(FlaskForm):
     body = CKEditorField("Blog Content", validators=[DataRequired()], _translations='en')
-    submit = SubmitField("Leave Comment")
+    submit = SubmitField("Leave Comment", render_kw={"class": "btn-primary btn-sm mt-3"})
 
 
 class RegisterForm(FlaskForm):
@@ -216,10 +217,11 @@ def build_post(post_id):
     authenticated = current_user.is_authenticated
     form = AddCommentForm()
     posts = posts_list()
+    users = db.session.execute(db.select(User)).scalars().all()
     comments = comments_list(post_id)
     translator = Markup
     return render_template("post.html", posts=posts, id=post_id, translator=translator, authenticated=authenticated,
-                           form=form, comments=comments)
+                           form=form, comments=comments, users=users)
 
 
 @app.route("/new-post", methods=["GET", "POST"])
@@ -284,6 +286,7 @@ def create_comment(post_id):
     if validation:
         new_comment = Comment(
             text=form.body.data,
+            date=datetime.now().strftime("%B %d %Y, %H:%M:%S"),
             author_id=current_user.id,
             post_id=post_id
         )
