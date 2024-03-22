@@ -20,7 +20,7 @@ from wtforms import StringField, URLField, SubmitField, EmailField, PasswordFiel
 from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__, static_url_path='/static')
-app.config['SECRET_KEY'] = os.urandom(32)
+app.config['SECRET_KEY'] = os.environ.get("SEC_KEY")
 
 csrf = CSRFProtect(app)
 Bootstrap(app)
@@ -28,9 +28,9 @@ ckeditor = CKEditor(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-my_email = "all.junk.mails.my@gmail.com"
-password = "jjbw dcrj tzun uydj"
-email = "all.junk.mails.my@gmail.com"
+my_email = os.environ.get("MAIN_EMAIL")
+password = os.environ.get("MAIN_EMAIL_PASS")
+email = os.environ.get("MAIN_EMAIL")
 
 
 def admin_only(f):
@@ -60,7 +60,7 @@ class Base(DeclarativeBase):
     pass
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///posts.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE")
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
