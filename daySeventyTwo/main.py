@@ -31,7 +31,28 @@ print(f'The minimal risk to become a low paid specialist have a {wiped_df["Under
 print(f'The maximal risk to become a low paid specialist have a '
       f'{wiped_df["Undergraduate Major"][maximal_risk_salary]}')
 
-sorted_salaries = wiped_df.sort_values('Spread', ascending=False)
-salaries_spread_table = sorted_salaries[['Undergraduate Major', 'Spread']]
-highest_potential = wiped_df.sort_values('Mid-Career 90th Percentile Salary', ascending=False)
-highest_potential_table = highest_potential[['Undergraduate Major', 'Mid-Career 90th Percentile Salary']].head()
+
+def get_spread():
+    data = wiped_df
+    sorted_salaries = data.sort_values('Spread', ascending=False)
+    salaries_spread_table = sorted_salaries[['Undergraduate Major', 'Spread']]
+    return salaries_spread_table
+
+
+def get_potential():
+    data = wiped_df
+    highest_potential = data.sort_values('Mid-Career 90th Percentile Salary', ascending=False)
+    highest_potential_table = highest_potential[['Undergraduate Major', 'Mid-Career 90th Percentile Salary']].head()
+    return highest_potential_table
+
+
+def count_occurrences():
+    pd.options.display.float_format = '{:,.2f}'.format
+    data = df
+    occurrences = data.groupby('Group').mean(True)
+    return occurrences
+
+
+occ = count_occurrences()
+
+print(occ)
