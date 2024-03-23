@@ -8,7 +8,9 @@ data.DATE = pd.to_datetime(data.DATE)
 pivoted = data.pivot(index='DATE', columns='TAG', values='POSTS')
 pivoted.fillna(0, inplace=True)
 
-plt.figure(figsize=(13, 13))
+roll_df = pivoted.rolling(window=3).mean()
+
+plt.figure(figsize=(10, 10))
 plt.xticks(fontsize=12)
 plt.yticks(fontsize=12)
 plt.xlabel('Date', fontsize=12)
