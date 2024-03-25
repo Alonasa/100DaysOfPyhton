@@ -22,6 +22,33 @@
                     </select>
                     <input class="btn btn-primary btn-sm" type="submit" value="Select">
                 </form>
+                {% if data %}
+                <table class="table">
+                    
+                    
+                    <thead>
+                        <tr class="text-sm-start">
+                            <th scope="col">Set number</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Year</th>
+                            <th scope="col">Theme ID</th>
+                            <th scope="col">Num Parts</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        {% for el in data %}
+                        <tr>
+                            <td>{{el.set_num}}</td>
+                            <td>{{el.name}}</td>
+                            <td>{{el.year}}</td>
+                            <td>{{el.theme_id}}</td>
+                            <td>{{el.num_parts}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
             </div>
         
         
