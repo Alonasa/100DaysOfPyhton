@@ -53,7 +53,7 @@ def show_data_by_year():
 @app.route('/visualize-sets')
 def visualize_sets():
     filtered_data = sets_data[sets_data['year'].isin([int(year) for year in years])]
-    sets = filtered_data.groupby('year')['num_parts'].sum()
+    sets = filtered_data.groupby('year')['year'].value_counts()
     fig = go.Figure(data=go.Scatter(x=sets.index, y=sets.values, mode='lines'))
 
     fig.update_layout(

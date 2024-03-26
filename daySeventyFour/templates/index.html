@@ -15,41 +15,44 @@
             <div>
                 <h3 class="text-capitalize text-center">Show lego data by years</h3>
                 <form method="post" action="/select">
-                    <select name="years" class="form-select form-select-lg m-3">
+                    <select name="years" class="form-select form-select-lg mt-3 mb-3">
                         {% for opt in years %}
                         <option value="{{opt}}">{{opt}}</option>
                         {% endfor %}
                     </select>
                     <input class="btn btn-primary btn-sm" type="submit" value="Select">
                 </form>
-                <a class="btn btn-primary" href="#" onclick="showChart()">Show chart by year</a>
+                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart()">Show chart by year</a>
                 <div id="plot" style="display: none;">
-                    <iframe id="chartIframe" src="{{url_for('visualize_sets')}}" width="800" height="600"></iframe>
+                    <iframe class="w-100 mt-3" id="chartIframe" src="{{url_for('visualize_sets')}}"
+                            height="800"></iframe>
                 </div>
                 {% if data %}
-                <table class="table">
-                    <thead>
-                        <tr class="text-sm-start">
-                            <th scope="col">Set number</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Year</th>
-                            <th scope="col">Theme ID</th>
-                            <th scope="col">Num Parts</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        {% for el in data %}
-                        <tr>
-                            <td>{{el.set_num}}</td>
-                            <td>{{el.name}}</td>
-                            <td>{{el.year}}</td>
-                            <td>{{el.theme_id}}</td>
-                            <td>{{el.num_parts}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-striped" style="font-size: 12px;">
+                        <thead>
+                            <tr class="text-sm-start">
+                                <th scope="col">Set number</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Year</th>
+                                <th scope="col">Theme ID</th>
+                                <th scope="col">Num Parts</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            {% for el in data %}
+                            <tr>
+                                <td>{{el.set_num}}</td>
+                                <td>{{el.name}}</td>
+                                <td>{{el.year}}</td>
+                                <td>{{el.theme_id}}</td>
+                                <td>{{el.num_parts}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% endif %}
             </div>
         
