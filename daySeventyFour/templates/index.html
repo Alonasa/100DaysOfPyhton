@@ -22,7 +22,8 @@
                     </select>
                     <input class="btn btn-primary btn-sm" type="submit" value="Select">
                 </form>
-                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart()">Show chart by year</a>
+                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart()">Show chart</a>
+                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart()">Show complexity</a>
                 <div id="plot" style="display: none;">
                     <iframe style="display: none;" class="w-100 mt-3" id="chartIframe"
                             src="{{url_for('visualize_sets')}}"

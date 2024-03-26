@@ -1,7 +1,7 @@
 import os
-
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.subplots as sp
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from plotly.offline import offline
@@ -18,9 +18,9 @@ amt_transparent = 0
 for item in transparent_colors:
     if item == 't':
         amt_transparent += 1
-# print(unique_colors)
-# print(amt_transparent)
-# print(sets_data.head())
+print(unique_colors)
+print(amt_transparent)
+print(sets_data.head())
 get_first_lego_release = sets_data.sort_values('year').head()
 years = sets_data.sort_values('year')['year'].drop_duplicates()
 data_by_year = sets_data[sets_data['year'] == 1965]
@@ -58,17 +58,24 @@ def visualize_sets():
     sets = filtered_data.groupby('year')['year'].value_counts()
     indexes = themes.index[:-2]
     themes_by = themes.nr_themes[:-2]
+
+    fig = sp.make_subplots(specs=[[{"secondary_y": True}]])
+
     trace_1 = go.Scatter(x=indexes, y=themes_by, mode='lines', name='Amt of themes')
     trace_2 = go.Scatter(x=sets.index[:-2], y=sets.values[:-2], mode='lines', name='Amt of sets')
 
-    fig = go.Figure()
-    fig.add_trace(trace_1)
-    fig.add_trace(trace_2)
+    fig.add_trace(trace_1, secondary_y=False)
+    fig.add_trace(trace_2, secondary_y=True)
 
     fig.update_layout(
         xaxis_title='Year',
-        yaxis_title='Amt Of Parts in Sets Per Year'
+        yaxis_title='Amt Of Themes',
+        yaxis2_title='Amt Of Sets',
+        legend=dict(x=0, y=1, xanchor='left', yanchor='top')
     )
+
+    fig.update_yaxes(title_text='Amt Of Themes', secondary_y=False)
+    fig.update_yaxes(title_text='Amt Of Sets', secondary_y=True)
 
     offline.plot(fig, filename='templates/plot.html', auto_open=False)
     return render_template('plot.html')
