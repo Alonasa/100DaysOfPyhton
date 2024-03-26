@@ -22,10 +22,12 @@
                     </select>
                     <input class="btn btn-primary btn-sm" type="submit" value="Select">
                 </form>
+                <a class="btn btn-primary" href="#" onclick="showChart()">Show chart by year</a>
+                <div id="plot" style="display: none;">
+                    <iframe id="chartIframe" src="{{url_for('visualize_sets')}}" width="800" height="600"></iframe>
+                </div>
                 {% if data %}
                 <table class="table">
-                    
-                    
                     <thead>
                         <tr class="text-sm-start">
                             <th scope="col">Set number</th>
@@ -51,9 +53,22 @@
                 {% endif %}
             </div>
         
-        
         </div>
-        
+        <script>
+            function showChart() {
+              var iframe = document.getElementById('chartIframe');
+              var plotDiv = document.getElementById('plot');
+          
+              if (iframe.style.display === 'none') {
+                iframe.style.display = 'block';
+                plotDiv.style.display = 'block';
+              } else {
+                iframe.style.display = 'none';
+                plotDiv.style.display = 'none';
+              }
+            }
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     </body>
 </html>
