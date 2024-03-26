@@ -81,5 +81,23 @@ def visualize_sets():
     return render_template('plot.html')
 
 
+@app.route('/show-complexity')
+def visualize_complexity():
+    data = sets_data
+    parts_per_set = data['num_parts'][:-2]
+    years = sets_data['year'][:-2]
+
+    scatter = go.Scatter(x=years, y=parts_per_set, mode='markers', name='Pieces Per Set')
+    layout = go.Layout(
+        title='Pieces per Set',
+        xaxis=go.layout.XAxis(title='Year'),
+        yaxis=go.layout.YAxis(title='Pieces per set')
+    )
+    figure = go.Figure(data=[scatter], layout=layout)
+    offline.plot(figure, filename='templates/scatter-plot.html', auto_open=False)
+
+    return render_template('scatter-plot.html')
+
+
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
