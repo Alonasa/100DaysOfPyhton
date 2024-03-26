@@ -23,7 +23,6 @@ for item in transparent_colors:
 # print(sets_data.head())
 get_first_lego_release = sets_data.sort_values('year').head()
 years = sets_data.sort_values('year')['year'].drop_duplicates()
-print(get_first_lego_release)
 data_by_year = sets_data[sets_data['year'] == 1965]
 
 
@@ -53,8 +52,18 @@ def show_data_by_year():
 @app.route('/visualize-sets')
 def visualize_sets():
     filtered_data = sets_data[sets_data['year'].isin([int(year) for year in years])]
+    themes = filtered_data.groupby('year').agg({'theme_id': pd.Series.nunique})
+    themes.rename(columns={'theme_id': 'nr_themes'}, inplace=True)
+
     sets = filtered_data.groupby('year')['year'].value_counts()
-    fig = go.Figure(data=go.Scatter(x=sets.index[:-2], y=sets.values[:-2], mode='lines'))
+    indexes = themes.index[:-2]
+    themes_by = themes.nr_themes[:-2]
+    trace_1 = go.Scatter(x=indexes, y=themes_by, mode='lines', name='Amt of themes')
+    trace_2 = go.Scatter(x=sets.index[:-2], y=sets.values[:-2], mode='lines', name='Amt of sets')
+
+    fig = go.Figure()
+    fig.add_trace(trace_1)
+    fig.add_trace(trace_2)
 
     fig.update_layout(
         xaxis_title='Year',
