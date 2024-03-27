@@ -84,10 +84,10 @@ def visualize_sets():
 @app.route('/show-complexity')
 def visualize_complexity():
     data = sets_data
-    parts_per_set = data['num_parts'][:-2]
-    years = sets_data['year'][:-2]
+    parts_per_set = data.groupby('year').agg({'num_parts': pd.Series.mean})
 
-    scatter = go.Scatter(x=years, y=parts_per_set, mode='markers', name='Pieces Per Set')
+    scatter = go.Scatter(x=parts_per_set.index[:-2], y=parts_per_set.num_parts[:-2], mode='markers', name='Pieces Per '
+                                                                                                          'Set')
     layout = go.Layout(
         title='Pieces per Set',
         xaxis=go.layout.XAxis(title='Year'),
