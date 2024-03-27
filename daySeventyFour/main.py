@@ -104,11 +104,10 @@ def visualize_themes():
     count_set = sets["theme_id"].value_counts()
     count_set = pd.DataFrame({'id': count_set.index, 'set_count': count_set.values})
     merged_df = pd.merge(count_set, themes, on='id')
-    scatter = go.Bar(x=merged_df.name[:10], y=merged_df.set_count[:10], name='Pieces Per '
-                                                                             'Set')
+    scatter = go.Bar(x=merged_df.name[:18], y=merged_df.set_count[:18], name='Show amount of sets')
     layout = go.Layout(
-        title='Pieces per Set',
-        xaxis=go.layout.XAxis(title='Name'),
+        title='Number of Sets',
+        xaxis=go.layout.XAxis(title='Name', tickangle=-20),
         yaxis=go.layout.YAxis(title='Sets')
     )
     figure = go.Figure(data=[scatter], layout=layout)

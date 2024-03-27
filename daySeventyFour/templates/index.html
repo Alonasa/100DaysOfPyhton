@@ -22,12 +22,12 @@
                     </select>
                     <input class="btn btn-primary btn-sm" type="submit" value="Select">
                 </form>
-                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartScart', 'scart')">Show
-                    complexity</a>
-                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartIframe','plot')">Show
-                    chart</a>
-                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('barIframe','bar')">Show
-                    barchart</a>
+                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartScart', 'scart')">Themes Vs
+                    Sets</a>
+                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartIframe','plot')">Pieces Per
+                    Set</a>
+                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('barIframe','bar')">Amount Of
+                    Sets</a>
                 <div id="plot" style="display: none;">
                     <iframe style="display: none;" class="w-100 mt-3" id="chartIframe"
                             src="{{url_for('visualize_sets')}}"
@@ -75,16 +75,24 @@
         </div>
         <script>
             function showChart(ifr,char) {
+              var iframes = document.querySelectorAll('iframe');
+              var plotDivs = document.querySelectorAll('#bar, #scart, #plot');
+            
+              // Hide all iframes and plotDivs
+              iframes.forEach(function(iframe) {
+                iframe.style.display = 'none';
+              });
+            
+              plotDivs.forEach(function(plotDiv) {
+                plotDiv.style.display = 'none';
+              });
+            
+              // Show the selected iframe and plotDiv
               var iframe = document.getElementById(ifr);
               var plotDiv = document.getElementById(char);
-          
-              if (iframe.style.display === 'none') {
-                iframe.style.display = 'block';
-                plotDiv.style.display = 'block';
-              } else {
-                iframe.style.display = 'none';
-                plotDiv.style.display = 'none';
-              }
+            
+              iframe.style.display = 'block';
+              plotDiv.style.display = 'block';
             }
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
