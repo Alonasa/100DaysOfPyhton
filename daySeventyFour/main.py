@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.subplots as sp
@@ -28,12 +29,12 @@ bitcoin_price.dropna(inplace=True)
 df_bc_search = pd.DataFrame(bitcoin_search)
 df_bc_price = pd.DataFrame(bitcoin_price)
 df_tesla = pd.DataFrame(tesla_se_vs_pr)
-df_unemployment = pd.DataFrame(bitcoin_search)
+df_unemployment = pd.DataFrame(ben_vs_ue)
 
 df_bc_search.MONTH = pd.to_datetime(bitcoin_search.MONTH)
 df_bc_price.DATE = pd.to_datetime(bitcoin_price.DATE)
 df_tesla.MONTH = pd.to_datetime(tesla_se_vs_pr.MONTH)
-df_unemployment.MONTH = pd.to_datetime(bitcoin_search.MONTH)
+df_unemployment.MONTH = pd.to_datetime(ben_vs_ue.MONTH)
 
 
 @app.route('/')
@@ -131,6 +132,81 @@ def visualize_themes():
 @app.route('/lego')
 def show_lego():
     return render_template('lego-template.html', years=years)
+
+
+@app.route('/searches')
+def show_searches():
+    return render_template('searches-template.html')
+
+
+@app.route('/tesla')
+def visualize_tesla():
+    searches = df_tesla['TSLA_WEB_SEARCH']
+    prices = df_tesla['TSLA_USD_CLOSE']
+    indexes = df_tesla['MONTH']
+
+    fig = sp.make_subplots(specs=[[{"secondary_y": True}]])
+
+    trace_1 = go.Scatter(x=indexes, y=prices, mode='lines', line=dict(width=3), name='Closing Price')
+    trace_2 = go.Scatter(x=indexes, y=searches, mode='lines', line=dict(width=3), name='Web Searches')
+
+    fig.add_trace(trace_1, secondary_y=False)
+    fig.add_trace(trace_2, secondary_y=True)
+
+    fig.update_layout(
+        title={'text': 'Tesla Web Search vs Price', 'x': 0.5, 'font': {'size': 14}},
+        xaxis_title='Years',
+        yaxis_title='TSLA Stock Price',
+        yaxis2_title='Searches Trend',
+        legend=dict(x=0, y=0, xanchor='left', yanchor='top')
+    )
+
+    fig.update_yaxes(title_text='Closing Prices', secondary_y=False)
+    fig.update_yaxes(title_text='Web Searches', secondary_y=True)
+
+    offline.plot(fig, filename='templates/tsla.html', auto_open=False)
+    return render_template('tsla.html')
+
+
+@app.route('/unemployment')
+def visualize_unemployment():
+    searches = df_unemployment['UE_BENEFITS_WEB_SEARCH']
+    rate = df_unemployment['UNRATE']
+    indexes = df_unemployment['MONTH']
+    date_series = pd.to_datetime(pd.Series(indexes))
+
+    fig = sp.make_subplots(specs=[[{"secondary_y": True}]])
+
+    trace_1 = go.Scatter(x=indexes, y=rate, mode='lines', line=dict(width=3, color='cyan', dash='dash'),
+                         name='Unemployment Rate')
+    trace_2 = go.Scatter(x=indexes, y=searches, mode='lines', line=dict(width=3, color='fuchsia'), name='Web Searches')
+
+    fig.add_trace(trace_1, secondary_y=False)
+    fig.add_trace(trace_2, secondary_y=True)
+
+    fig.update_layout(
+        title={'text': 'Monthly Search of "Unemployment Benefits" in the U.S. vs U/E Rate',
+               'x':    0.5, 'font': {'size': 14}},
+        xaxis_title='Years',
+        xaxis=dict(
+            tickmode='array',
+            tickvals=date_series.dt.year,
+            dtick='M1',
+            tickformat='%Y',
+            ticklabelmode='period'
+        ),
+        yaxis_title='Unemployment Rate',
+        yaxis_color='blue',
+        yaxis2_color='fuchsia',
+        yaxis2_title='Searches Trend',
+        legend=dict(x=1, y=0, xanchor='center', yanchor='top')
+    )
+
+    fig.update_yaxes(title_text='Unemployment Rate', secondary_y=False)
+    fig.update_yaxes(title_text='Web Searches', secondary_y=True)
+
+    offline.plot(fig, filename='templates/unemployment.html', auto_open=False)
+    return render_template('unemployment.html')
 
 
 if __name__ == "__main__":
