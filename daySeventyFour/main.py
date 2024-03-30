@@ -10,23 +10,35 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.environ.get("SEC_KEY")
 Bootstrap(app)
 
-colors_data = pd.read_csv('data/colors.csv')
-sets_data = pd.read_csv('data/sets.csv')
-themes_data = pd.read_csv('data/themes.csv')
-unique_colors = colors_data['name'].nunique()
-transparent_colors = colors_data['is_trans']
-amt_transparent = 0
-for item in transparent_colors:
-    if item == 't':
-        amt_transparent += 1
+# Lego analysis
+colors_data = pd.read_csv('data/lego/colors.csv')
+sets_data = pd.read_csv('data/lego/sets.csv')
+themes_data = pd.read_csv('data/lego/themes.csv')
 get_first_lego_release = sets_data.sort_values('year').head()
 years = sets_data.sort_values('year')['year'].drop_duplicates()
-data_by_year = sets_data[sets_data['year'] == 1965]
+
+# Google Trends Bitcoin, Tesla, Unemployment
+bitcoin_price = pd.read_csv('data/trends/Daily Bitcoin Price.csv')
+bitcoin_search = pd.read_csv('data/trends/Bitcoin Search Trend.csv')
+
+ben_vs_ue = pd.read_csv('data/trends/UE Benefits Search vs UE Rate 2004-20.csv')
+tesla_se_vs_pr = pd.read_csv('data/trends/TESLA Search Trend vs Price.csv')
+bitcoin_price.dropna(inplace=True)
+
+df_bc_search = pd.DataFrame(bitcoin_search)
+df_bc_price = pd.DataFrame(bitcoin_price)
+df_tesla = pd.DataFrame(tesla_se_vs_pr)
+df_unemployment = pd.DataFrame(bitcoin_search)
+
+df_bc_search.MONTH = pd.to_datetime(bitcoin_search.MONTH)
+df_bc_price.DATE = pd.to_datetime(bitcoin_price.DATE)
+df_tesla.MONTH = pd.to_datetime(tesla_se_vs_pr.MONTH)
+df_unemployment.MONTH = pd.to_datetime(bitcoin_search.MONTH)
 
 
 @app.route('/')
 def main_page():
-    return render_template('index.html', years=years)
+    return render_template('index.html')
 
 
 @app.route('/select', methods=['POST'])
@@ -44,7 +56,7 @@ def show_data_by_year():
             "num_parts": unify_data['num_parts'][key]
         }
         ready_data.append(element)
-    return render_template('index.html', data=ready_data, years=years)
+    return render_template('lego-template.html', data=ready_data, years=years)
 
 
 @app.route('/show-sets')
@@ -114,6 +126,11 @@ def visualize_themes():
     offline.plot(figure, filename='templates/barchart.html', auto_open=False)
 
     return render_template('barchart.html')
+
+
+@app.route('/lego')
+def show_lego():
+    return render_template('lego-template.html', years=years)
 
 
 if __name__ == "__main__":

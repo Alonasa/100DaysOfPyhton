@@ -5,97 +5,43 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Lego Data</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        <title>Data Analysis Projects</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
               crossorigin="anonymous">
-    </head>
-    <body class="container">
-        <div class="row m-2 gx-4 gx-lg-5 justify-content-center">
-            <div>
-                <h3 class="text-capitalize text-center">Show lego data by years</h3>
-                <form method="post" action="/select">
-                    <select name="years" class="form-select form-select-lg mt-3 mb-3">
-                        {% for opt in years %}
-                        <option value="{{opt}}">{{opt}}</option>
-                        {% endfor %}
-                    </select>
-                    <input class="btn btn-primary btn-sm" type="submit" value="Select">
-                </form>
-                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartScart', 'scart')">Themes Vs
-                    Sets</a>
-                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartIframe','plot')">Pieces Per
-                    Set</a>
-                <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('barIframe','bar')">Amount Of
-                    Sets</a>
-                <div id="plot" style="display: none;">
-                    <iframe style="display: none;" class="w-100 mt-3" id="chartIframe"
-                            src="{{url_for('visualize_sets')}}"
-                            height="800"></iframe>
-                </div>
-                <div id="scart" style="display: none;">
-                    <iframe style="display: none;" class="w-100 mt-3" id="chartScart"
-                            src="{{url_for('visualize_complexity')}}"
-                            height="800"></iframe>
-                </div>
-                <div id="bar" style="display: none;">
-                    <iframe style="display: none;" class="w-100 mt-3" id="barIframe"
-                            src="{{url_for('visualize_themes')}}"
-                            height="800"></iframe>
-                </div>
-                {% if data %}
-                <div class="table-responsive">
-                    <table class="table table-striped" style="font-size: 12px;">
-                        <thead>
-                            <tr class="text-sm-start">
-                                <th scope="col">Set number</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Year</th>
-                                <th scope="col">Theme ID</th>
-                                <th scope="col">Num Parts</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            {% for el in data %}
-                            <tr>
-                                <td>{{el.set_num}}</td>
-                                <td>{{el.name}}</td>
-                                <td>{{el.year}}</td>
-                                <td>{{el.theme_id}}</td>
-                                <td>{{el.num_parts}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% endif %}
-            </div>
+        <!-- Include Popper.js -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+                integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+                crossorigin="anonymous"></script>
         
-        </div>
-        <script>
-            function showChart(ifr,char) {
-              var iframes = document.querySelectorAll('iframe');
-              var plotDivs = document.querySelectorAll('#bar, #scart, #plot');
-            
-              // Hide all iframes and plotDivs
-              iframes.forEach(function(iframe) {
-                iframe.style.display = 'none';
-              });
-            
-              plotDivs.forEach(function(plotDiv) {
-                plotDiv.style.display = 'none';
-              });
-            
-              // Show the selected iframe and plotDiv
-              var iframe = document.getElementById(ifr);
-              var plotDiv = document.getElementById(char);
-            
-              iframe.style.display = 'block';
-              plotDiv.style.display = 'block';
-            }
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Include Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+                integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+                crossorigin="anonymous"></script>
+    </head>
+    <body class="container bg-light">
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">Data Analytic</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{url_for('show_lego')}}">Lego Analytics</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        {% block content %}
+        {% endblock %}
+        
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     </body>
 </html>
