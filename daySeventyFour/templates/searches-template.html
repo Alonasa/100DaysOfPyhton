@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="row m-2 gx-4 gx-lg-5 justify-content-center">
+    <div>
+        <h3 class="text-capitalize text-center">Data analytics searches VS prices</h3>
+        <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartScart', 'scart')">Tesla Analysis</a>
+        <!--         <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartIframe','plot')">Pieces Per -->
+        <!--             Set</a> -->
+        <!--         <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('barIframe','bar')">Amount Of -->
+        <!--             Sets</a> -->
+        <!--         <div id="plot" style="display: none;"> -->
+        <!--             <iframe style="display: none;" class="w-100 mt-3" id="chartIframe" -->
+        <!--                     src="{{url_for('visualize_tesla')}}" -->
+        <!--                     height="800"></iframe> -->
+        <!--         </div> -->
+        <div id="scart" style="display: none;">
+            <iframe style="display: none;" class="w-100 mt-3" id="chartScart"
+                    src="{{url_for('visualize_tesla')}}"
+                    height="800"></iframe>
+        </div>
+        <!--         <div id="bar" style="display: none;"> -->
+        <!--             <iframe style="display: none;" class="w-100 mt-3" id="barIframe" -->
+        <!--                     src="{{url_for('visualize_themes')}}" -->
+        <!--                     height="800"></iframe> -->
+        <!--         </div> -->
+        {% if data %}
+        <div class="table-responsive">
+            <table class="table table-striped" style="font-size: 12px;">
+                <thead>
+                    <tr class="text-sm-start">
+                        <th scope="col">Set number</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Year</th>
+                        <th scope="col">Theme ID</th>
+                        <th scope="col">Num Parts</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for el in data %}
+                    <tr>
+                        <td>{{el.set_num}}</td>
+                        <td>{{el.name}}</td>
+                        <td>{{el.year}}</td>
+                        <td>{{el.theme_id}}</td>
+                        <td>{{el.num_parts}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+<script>
+    function showChart(ifr,char) {
+      var iframes = document.querySelectorAll('iframe');
+      var plotDivs = document.querySelectorAll('#bar, #scart, #plot');
+    
+      // Hide all iframes and plotDivs
+      iframes.forEach(function(iframe) {
+        iframe.style.display = 'none';
+      });
+    
+      plotDivs.forEach(function(plotDiv) {
+        plotDiv.style.display = 'none';
+      });
+    
+      // Show the selected iframe and plotDiv
+      var iframe = document.getElementById(ifr);
+      var plotDiv = document.getElementById(char);
+    
+      iframe.style.display = 'block';
+      plotDiv.style.display = 'block';
+    }
+</script>
+{% endblock %}
