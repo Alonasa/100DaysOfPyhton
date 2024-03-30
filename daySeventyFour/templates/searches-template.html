@@ -8,12 +8,12 @@
             Analysis</a>
         <a class="btn btn-sm btn-primary mt-3" href="#" onclick="showChart('chartBitcoin', 'bitcoin')">Bitcoin
             Analysis</a>
-        <!--         <div id="plot" style="display: none;"> -->
-        <!--             <iframe style="display: none;" class="w-100 mt-3" id="chartIframe" -->
-        <!--                     src="{{url_for('visualize_tesla')}}" -->
-        <!--                     height="800"></iframe> -->
-        <!--         </div> -->
-        <div id="scart" style="display: none;">
+        <div id="bitcoin" style="display: none;">
+            <iframe style="display: none;" class="w-100 mt-3" id="chartBitcoin"
+                    src="{{url_for('visualize_bitcoin')}}"
+                    height="800"></iframe>
+        </div>
+        <div id="tesla" style="display: none;">
             <iframe style="display: none;" class="w-100 mt-3" id="chartTesla"
                     src="{{url_for('visualize_tesla')}}"
                     height="800"></iframe>
