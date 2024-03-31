@@ -36,6 +36,16 @@ df_bc_price.DATE = pd.to_datetime(bitcoin_price.DATE)
 df_tesla.MONTH = pd.to_datetime(tesla_se_vs_pr.MONTH)
 df_unemployment.MONTH = pd.to_datetime(ben_vs_ue.MONTH)
 
+df_bc_price['DATE'] = pd.to_datetime(df_bc_price['DATE'])
+df_bc_monthly = df_bc_price.resample('M', on='DATE').mean()
+df_bc_price.set_index('DATE', inplace=True)
+resampled_dates = df_bc_monthly.index
+
+
+# apps = pd.read_csv('data/appStore/apps.csv')
+# df_apps = pd.DataFrame(apps)
+# print(df_apps)
+
 
 @app.route('/')
 def main_page():
@@ -179,7 +189,7 @@ def visualize_unemployment():
 
     trace_1 = go.Scatter(x=indexes, y=rate, mode='lines', line=dict(width=3, color='cyan', dash='dash'),
                          name='Unemployment Rate')
-    trace_2 = go.Scatter(x=indexes, y=searches, mode='lines', line=dict(width=3, color='fuchsia'), name='Web Searches')
+    trace_2 = go.Scatter(x=indexes, y=searches, mode='lines', line=dict(width=3, color='purple'), name='Web Searches')
 
     fig.add_trace(trace_1, secondary_y=False)
     fig.add_trace(trace_2, secondary_y=True)
@@ -197,7 +207,7 @@ def visualize_unemployment():
         ),
         yaxis_title='Unemployment Rate',
         yaxis_color='blue',
-        yaxis2_color='fuchsia',
+        yaxis2_color='purple',
         yaxis2_title='Searches Trend',
         legend=dict(x=1, y=0, xanchor='center', yanchor='top')
     )
@@ -207,6 +217,46 @@ def visualize_unemployment():
 
     offline.plot(fig, filename='templates/unemployment.html', auto_open=False)
     return render_template('unemployment.html')
+
+
+@app.route('/bitcoin')
+def visualize_bitcoin():
+    rate = df_bc_monthly['CLOSE']
+    indexes_price = resampled_dates
+    indexes_search = df_bc_search['MONTH']
+    searches = df_bc_search['BTC_NEWS_SEARCH']
+
+    fig = sp.make_subplots(specs=[[{"secondary_y": True}]])
+    trace_1 = go.Scatter(x=indexes_price, y=rate, mode='lines', line=dict(width=3, color='orange', dash='dash'),
+                         name='BTC Price')
+    trace_2 = go.Scatter(x=indexes_search, y=searches, mode='lines+markers', line=dict(width=3, color='cyan'),
+                         name='Search Trends')
+
+    fig.add_trace(trace_1, secondary_y=False)
+    fig.add_trace(trace_2, secondary_y=True)
+
+    fig.update_layout(
+        title={'text': 'Bitcoin News Search vs Resampled Price',
+               'x':    0.5, 'font': {'size': 14}},
+        xaxis_title='Years',
+        yaxis_title='BTC Price',
+        yaxis_color='orange',
+        yaxis2_color='cyan',
+        yaxis2_title='Search Trend',
+        legend=dict(x=1, y=0, xanchor='center', yanchor='top')
+    )
+
+    fig.update_yaxes(title_text='Bitcoin Price', secondary_y=False)
+    fig.update_yaxes(title_text='Web Searches', secondary_y=True)
+
+    offline.plot(fig, filename='templates/bitcoin.html', auto_open=False)
+    return render_template('bitcoin.html')
+
+
+# @app.route('/apps')
+# def visualize_apps():
+#     data = df_apps
+#     print(data)
 
 
 if __name__ == "__main__":
